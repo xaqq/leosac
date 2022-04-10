@@ -1,3 +1,4 @@
+[settings]
+build_type=Release
 [options]
 leosac:build_module_mqtt=True
-leosac:build_test=True
