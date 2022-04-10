@@ -8,7 +8,7 @@ compiler=gcc
 compiler.version=10
 compiler.libcxx=libstdc++11
 cppstd=14
-build_type=Release
+build_type=Debug
 [options]
 [build_requires]
 [env]
