@@ -26,14 +26,7 @@ if (CMAKE_BUILD_TYPE STREQUAL "")
     message(WARNING "Please specify a build type\nExample: cmake .. -DCMAKE_BUILD_TYPE=Debug")
 endif ()
 
-#set(LEOSAC_BUILD_CMAKE_ZMQ true CACHE BOOL "Build Libzmq through its CMakeFile")
-
-set(Boost_USE_STATIC_LIBS OFF)
-set(Boost_USE_STATIC_RUNTIME OFF)
-set(Boost_USE_MULTITHREADED ON)
-
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
-#find_package(PkgConfig REQUIRED)
 
 # ODB stuff
 #find_package(ODB REQUIRED ODB_EXECUTABLE)

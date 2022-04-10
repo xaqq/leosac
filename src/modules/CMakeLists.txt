@@ -15,6 +15,7 @@ set(LEOSAC_MODULE_BASE_DEPENDENCIES
         CONAN_PKG::libodb
         CONAN_PKG::nlohmann_json
         CONAN_PKG::date
+        leosac_lib
         )
 
 add_subdirectory(rpleth)

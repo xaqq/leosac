@@ -43,16 +43,9 @@ set_target_properties(${MQTT_BIN} PROPERTIES
     COMPILE_FLAGS "${MQTT_COMPILE_FLAGS}"
     )
 
-target_include_directories(${MQTT_BIN} PUBLIC
-        ${CMAKE_SOURCE_DIR}/src
-        ${ODB_INCLUDE_DIRS}
-        ${ODB_COMPILE_OUTPUT_DIR}
-        )
-
 target_link_libraries(${MQTT_BIN} PUBLIC
 		CONAN_PKG::paho-mqtt-cpp
 		${LEOSAC_MODULE_BASE_DEPENDENCIES}
-		leosac_db
 		)
 
 install(TARGETS ${MQTT_BIN} DESTINATION ${LEOSAC_MODULE_INSTALL_DIR})

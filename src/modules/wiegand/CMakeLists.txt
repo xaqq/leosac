@@ -50,12 +50,6 @@ set_target_properties(${WIEGAND_BIN} PROPERTIES
     COMPILE_FLAGS "${MODULE_COMPILE_FLAGS}"
     )
 
-target_include_directories(${WIEGAND_BIN} PUBLIC
-        ${CMAKE_SOURCE_DIR}/src
-        ${ODB_INCLUDE_DIRS}
-        ${ODB_COMPILE_OUTPUT_DIR}
-        )
-
 target_link_libraries(${WIEGAND_BIN} PUBLIC websock-api   ${LEOSAC_MODULE_BASE_DEPENDENCIES} )
 
 install(TARGETS ${WIEGAND_BIN} DESTINATION ${LEOSAC_MODULE_INSTALL_DIR})

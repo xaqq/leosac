@@ -10,4 +10,9 @@ set_target_properties(module_piface_deps PROPERTIES
         LINKER_LANGUAGE C
         )
 
+target_include_directories(module_piface_deps PUBLIC
+        ${CMAKE_SOURCE_DIR}/deps/libpifacedigital/src/
+        ${CMAKE_SOURCE_DIR}/deps/libmcp23s17/src/
+        )
+
 install(TARGETS module_piface_deps DESTINATION ${LEOSAC_MODULE_INSTALL_DIR})
