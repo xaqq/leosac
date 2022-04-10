@@ -18,7 +18,9 @@ class LeosacConan(ConanFile):
                "spdlog/1.9.2", \
                "date/3.0.1", \
                "websocketpp/0.8.2", \
-               "libgpiod/1.6.3"               
+               "libgpiod/1.6.3", \
+               "zlib/1.2.11" # override
+    
 
     options = {
         'build_test': [True, False],
@@ -28,6 +30,7 @@ class LeosacConan(ConanFile):
     generators = 'cmake'
     default_options = {
         'build_test': True,
+        'build_module_mqtt': False,
         'gtest:shared': True,
         'libpq:shared': True,
         'zeromq:shared': True,

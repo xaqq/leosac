@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - '*'
+      - '!conan'
   pull_request:
     branches: [ develop ]
 
