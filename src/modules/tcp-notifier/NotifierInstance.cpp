@@ -23,6 +23,7 @@
 #include "tools/Colorize.hpp"
 #include "tools/log.hpp"
 #include <zmqpp/message.hpp>
+#include <algorithm>
 
 using namespace Leosac;
 using namespace Leosac::Module;

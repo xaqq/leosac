@@ -21,6 +21,8 @@
 #include "tools/log.hpp"
 #include "tools/unixshellscript.hpp"
 #include <zmqpp/z85.hpp>
+#include <spdlog/sinks/stdout_sinks.h>
+#include <spdlog/sinks/rotating_file_sink.h>
 
 using namespace Leosac::Module::Monitor;
 

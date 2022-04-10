@@ -17,6 +17,6 @@ set_target_properties(${TCP_NOTIFIER_BIN} PROPERTIES
 target_link_libraries(${TCP_NOTIFIER_BIN})
 
 target_link_libraries(${TCP_NOTIFIER_BIN} PUBLIC
-        CONAN_PKG::zmqpp CONAN_PKG::boost CONAN_PKG::libodb)
+        ${LEOSAC_MODULE_BASE_DEPENDENCIES})
 
 install(TARGETS ${TCP_NOTIFIER_BIN} DESTINATION ${LEOSAC_MODULE_INSTALL_DIR})

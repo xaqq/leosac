@@ -58,6 +58,6 @@ target_include_directories(${WIEGAND_BIN} PUBLIC
         ${ODB_COMPILE_OUTPUT_DIR}
         )
 
-target_link_libraries(${WIEGAND_BIN} PUBLIC websock-api CONAN_PKG::zmqpp CONAN_PKG::boost CONAN_PKG::libodb)
+target_link_libraries(${WIEGAND_BIN} PUBLIC websock-api   ${LEOSAC_MODULE_BASE_DEPENDENCIES} )
 
 install(TARGETS ${WIEGAND_BIN} DESTINATION ${LEOSAC_MODULE_INSTALL_DIR})

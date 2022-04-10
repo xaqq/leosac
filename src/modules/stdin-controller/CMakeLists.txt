@@ -12,8 +12,7 @@ set_target_properties(${STDINCONTROLLER_BIN} PROPERTIES
     )
 
 target_link_libraries(${STDINCONTROLLER_BIN} PUBLIC
-        CONAN_PKG::zmqpp
-        CONAN_PKG::boost
+        ${LEOSAC_MODULE_BASE_DEPENDENCIES}
         )
 
 install(TARGETS ${STDINCONTROLLER_BIN} DESTINATION ${LEOSAC_MODULE_INSTALL_DIR})

@@ -12,10 +12,8 @@ set_target_properties(${WS_NOTIFIER_BIN} PROPERTIES
     )
 
 target_link_libraries(${WS_NOTIFIER_BIN} PUBLIC
-        CONAN_PKG::zmqpp
+        ${LEOSAC_MODULE_BASE_DEPENDENCIES}
         CONAN_PKG::libcurl
-        CONAN_PKG::boost
-        CONAN_PKG::libodb
         )
 
 install(TARGETS ${WS_NOTIFIER_BIN} DESTINATION ${LEOSAC_MODULE_INSTALL_DIR})

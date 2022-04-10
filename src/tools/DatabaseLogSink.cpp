@@ -28,7 +28,7 @@
 using namespace Leosac;
 using namespace Leosac::Tools;
 
-DatabaseLogSink::DatabaseLogSink(DBPtr database)
+DatabaseLogSinkHelper::DatabaseLogSinkHelper(DBPtr database)
     : database_(database)
 {
     std::cout << "ENABLING SQL DATABASE LOGGER." << std::endl;
@@ -37,12 +37,14 @@ DatabaseLogSink::DatabaseLogSink(DBPtr database)
     run_id_ = Leosac::gen_uuid();
 }
 
-void DatabaseLogSink::log(const spdlog::details::log_msg &msg)
+void DatabaseLogSinkHelper::do_log(const spdlog::details::log_msg &msg)
 {
     LogEntry entry;
 
     entry.level_     = msg.level;
-    entry.msg_       = msg.formatted.str();
+    // TODO CONAN: Check /  fix this.
+    //entry.msg_       = msg.formatted.str();
+    entry.msg_ = "EMPTY FIX ME";
     entry.thread_id_ = msg.thread_id;
     entry.timestamp_ = time_point_ptime(msg.time);
     entry.run_id_    = run_id_;

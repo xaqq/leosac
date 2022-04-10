@@ -14,9 +14,7 @@ set_target_properties(${AUTH-FILE_BIN} PROPERTIES
     )
 
 target_link_libraries(${AUTH-FILE_BIN} PUBLIC
-        CONAN_PKG::zmqpp
-        CONAN_PKG::boost
-        CONAN_PKG::libodb
+        ${LEOSAC_MODULE_BASE_DEPENDENCIES}
         CONAN_PKG::libscrypt
         )
 

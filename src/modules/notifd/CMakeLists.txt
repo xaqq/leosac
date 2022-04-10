@@ -49,6 +49,6 @@ target_include_directories(${NOTIFD_BIN} PUBLIC
         ${ODB_COMPILE_OUTPUT_DIR}
         )
 
-target_link_libraries(${NOTIFD_BIN} PUBLIC CONAN_PKG::zmqpp CONAN_PKG::boost CONAN_PKG::libodb)
+target_link_libraries(${NOTIFD_BIN} PUBLIC   ${LEOSAC_MODULE_BASE_DEPENDENCIES} )
 
 install(TARGETS ${NOTIFD_BIN} DESTINATION ${LEOSAC_MODULE_INSTALL_DIR})
