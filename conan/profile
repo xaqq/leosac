@@ -11,3 +11,5 @@ cppstd=14
 [options]
 [build_requires]
 [env]
+leosac:CC=gcc-10
+leosac:CXX=g++-10
