@@ -1,11 +1,3 @@
-find_package(GTest REQUIRED)
-
-list(APPEND LEOSAC_TEST_INCLUDE_DIRECTORIES
-        ${CMAKE_SOURCE_DIR}/src
-        ${GTEST_INCLUDE_DIRS}
-        )
-list(APPEND LEOSAC_TEST_LIBRARIES leosac_lib ${GTEST_BOTH_LIBRARIES})
-
 function(leosacCreateSingleSourceTest NAME)
 ## module we link against
 set(MODULES_LIB wiegand led-buzzer rpleth sysfsgpio auth-file tcp-notifier)
@@ -16,8 +8,10 @@ set(HELPER_SRC  helper/FakeGPIO.cpp helper/FakeWiegandReader.cpp)
     set_target_properties(${TEST_NAME} PROPERTIES
         COMPILE_FLAGS "${LEOSAC_COMPILE_FLAGS} -W -Wall -g"
         INCLUDE_DIRECTORIES "${LEOSAC_TEST_INCLUDE_DIRECTORIES}")
-    target_link_libraries(${TEST_NAME} ${MODULES_LIB} ${LEOSAC_TEST_LIBRARIES})
-    target_include_directories(${TEST_NAME} PUBLIC ${Boost_INCLUDE_DIRS})
+    target_link_libraries(${TEST_NAME} PUBLIC
+            ${MODULES_LIB}
+            CONAN_PKG::gtest
+            )
 
     ## pass the data folder as a parameter.
     add_test(NAME ${TEST_NAME}

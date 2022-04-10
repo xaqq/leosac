@@ -2,7 +2,7 @@ from conans import ConanFile, CMake
 
 
 class LeosacConan(ConanFile):
-    settings = "os", "arch", "compiler", "build_type"    
+    settings = "os", "arch", "compiler", "build_type"
     name = "leosac"
     version = "0.0.8"
     requires = "zmqpp/4.2.0", \
@@ -17,20 +17,31 @@ class LeosacConan(ConanFile):
                "nlohmann_json/3.10.5", \
                "spdlog/1.9.2", \
                "date/3.0.1", \
-               "websocketpp/0.8.2"
+               "websocketpp/0.8.2", \
+               "gtest/1.11.0"
+
+    options = {
+        'build_test': [True, False]
+    }
 
     generators = 'cmake'
     default_options = {
+        'build_test': True,
+        'gtest:shared': True,
         'libpq:shared': True,
         'zeromq:shared': True,
         'zmqpp:shared': True,
-        'boost:without_stacktrace': True }
+        'boost:without_stacktrace': True,
+        'boost:without_test': True
+    }
 
     exports_sources = "CMakeLists.txt", "cmake*", "src*", "scripts*", "cfg*", "deps*", "test*"
     keep_imports = True
 
     def build(self):
         cmake = CMake(self)
+        if self.options.build_test:
+            cmake.definitions['LEOSAC_BUILD_TESTS'] = True
         cmake.configure()
         cmake.build()
 
