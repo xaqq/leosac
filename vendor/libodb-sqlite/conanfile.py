@@ -22,7 +22,8 @@ class LibOdbSQLITEConan(ConanFile):
 
         # Point to libpq and libodb
         tc.cxxflags = ['-I{}/include'.format(libsqlite_root),
-                       '-I{}/include'.format(libodb_root) ]
+                       '-I{}/include'.format(libodb_root),
+                       "-Wl,-rpath='\$\$ORIGIN/../lib'"]
         tc.ldflags = ['-L{}/lib'.format(libodb_root),
                       '-L{}/lib'.format(libsqlite_root)]
         tc.generate()    
