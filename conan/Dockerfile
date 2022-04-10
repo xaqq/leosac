@@ -21,6 +21,4 @@ VOLUME /root/.conan/data
 
 WORKDIR /leosac
 
-#CMD conan create --build missing --profile:build profile --profile:host profilearm .
-
-CMD conan create --build missing --profile:build profile --profile:host profilearm32 .
+CMD conan create --build missing --profile:build conan/profile --profile:host conan/profilearm32 .
