@@ -1,5 +1,5 @@
 [settings]
-build_type=Debug
+build_type=Release
 [options]
 leosac:build_module_mqtt=True
 leosac:build_test=True
