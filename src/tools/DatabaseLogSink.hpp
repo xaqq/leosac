@@ -19,36 +19,62 @@
 
 #pragma once
 
+#include "spdlog/details/null_mutex.h"
 #include "tools/db/db_fwd.hpp"
-#include <spdlog/sinks/sink.h>
+#include <mutex>
+#include <spdlog/sinks/base_sink.h>
 
 namespace Leosac
 {
 namespace Tools
 {
+
+/**
+ * A non template class to allow impl
+ */
+class DatabaseLogSinkHelper
+{
+  public:
+    DatabaseLogSinkHelper(DBPtr database);
+    void do_log(const spdlog::details::log_msg &msg);
+
+  private:
+    DBPtr database_;
+    std::string run_id_;
+};
+
 /**
  * A custom sink that write LogEntry object
  * to a SQLite database.
  */
-class DatabaseLogSink : public spdlog::sinks::sink
+template <typename Mutex>
+class DatabaseLogSink : public spdlog::sinks::base_sink<Mutex>
 {
   public:
     /**
      * Construct a SQLite backed log sink.
      * @param database A non null pointer to a ODB database object.
      */
-    DatabaseLogSink(DBPtr database);
+    DatabaseLogSink(DBPtr database)
+        : helper_(database)
+    {
+    }
 
-    virtual void log(const spdlog::details::log_msg &msg) override;
+    void sink_it_(const spdlog::details::log_msg &msg) override
+    {
+        helper_.do_log(msg);
+    }
 
-    virtual void flush() override
+    void flush_() override
     {
         // Noop as writing to a SQL database is transactional.
     }
 
   private:
-    DBPtr database_;
-    std::string run_id_;
+    DatabaseLogSinkHelper helper_;
 };
-}
-}
+
+using DatabaseLogSink_mt = DatabaseLogSink<::std::mutex>;
+using DatabaseLogSink_st = DatabaseLogSink<::spdlog::details::null_mutex>;
+} // namespace Tools
+} // namespace Leosac

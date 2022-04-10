@@ -55,6 +55,8 @@
 #include <fstream>
 #include <odb/pgsql/database.hxx>
 #include <odb/sqlite/database.hxx>
+#include <spdlog/sinks/syslog_sink.h>
+#include <spdlog/sinks/stdout_sinks.h>
 
 using boost::property_tree::ptree;
 using boost::property_tree::ptree_error;
@@ -385,20 +387,21 @@ void Kernel::configure_logger()
     }
     if (use_syslog)
     {
-        auto syslog = spdlog::create(
-            "syslog", {std::make_shared<spdlog::sinks::syslog_sink>()});
+        auto syslog = spdlog::syslog_logger_mt("syslog");
         syslog->set_level(static_cast<spdlog::level::level_enum>(
-            LogHelper::log_level_from_string(syslog_min_level)));
+                              LogHelper::log_level_from_string(syslog_min_level)));
     }
     if (use_database)
     {
-        console = spdlog::create(
-            "console", {std::make_shared<spdlog::sinks::stdout_sink_mt>(),
-                        std::make_shared<Tools::DatabaseLogSink>(database_)});
+        spdlog::sink_ptr db_sink = std::make_shared<Tools::DatabaseLogSink_mt>(database_);
+        spdlog::sink_ptr stdout_sink = std::make_shared<spdlog::sinks::stdout_sink_mt>();
+        std::vector<spdlog::sink_ptr> sinks =  {stdout_sink, db_sink};
+        console = std::make_shared<spdlog::logger>("console", sinks.begin(), sinks.end());
     }
     else
-        console = spdlog::create(
-            "console", {std::make_shared<spdlog::sinks::stdout_sink_mt>()});
+    {
+        console = spdlog::stdout_logger_mt("console");
+    }
     console->set_level(spdlog::level::debug);
 }
 

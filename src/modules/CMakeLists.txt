@@ -5,6 +5,17 @@ endif()
 
 set(LEOSAC_MODULE_INSTALL_DIR lib/leosac)
 
+# A list of target for module to link against.
+# Those are general purpose dependencies that are
+# generally needed by all module
+set(LEOSAC_MODULE_BASE_DEPENDENCIES
+        CONAN_PKG::spdlog
+        CONAN_PKG::zmqpp
+        CONAN_PKG::boost
+        CONAN_PKG::libodb
+        CONAN_PKG::nlohmann_json
+        )
+
 add_subdirectory(rpleth)
 add_subdirectory(sysfsgpio)
 add_subdirectory(stdin-controller)

@@ -15,6 +15,6 @@ set_target_properties(${RPLETH_BIN} PROPERTIES
    )
 
 target_link_libraries(${RPLETH_BIN} PUBLIC
-        CONAN_PKG::zmqpp CONAN_PKG::boost CONAN_PKG::libodb)
+          ${LEOSAC_MODULE_BASE_DEPENDENCIES} )
 
 install(TARGETS ${RPLETH_BIN} DESTINATION ${LEOSAC_MODULE_INSTALL_DIR})

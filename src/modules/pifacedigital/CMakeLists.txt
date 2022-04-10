@@ -46,7 +46,7 @@ add_library(${PIFACEDIGITAL_BIN} SHARED
         )
 
 target_link_libraries(${PIFACEDIGITAL_BIN} PUBLIC module_piface_deps websock-api
-        CONAN_PKG::zmqpp CONAN_PKG::boost CONAN_PKG::libodb)
+          ${LEOSAC_MODULE_BASE_DEPENDENCIES} )
 
 set_target_properties(${PIFACEDIGITAL_BIN} PROPERTIES
         COMPILE_FLAGS "${MODULE_COMPILE_FLAGS}"

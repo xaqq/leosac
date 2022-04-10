@@ -54,8 +54,7 @@ target_include_directories(${AUTH-DB_BIN} PUBLIC
 
 target_link_libraries(${AUTH-DB_BIN} PUBLIC
         websock-api
-        CONAN_PKG::zmqpp
-        CONAN_PKG::boost
+        ${LEOSAC_MODULE_BASE_DEPENDENCIES}
         )
 
 install(TARGETS ${AUTH-DB_BIN} DESTINATION ${LEOSAC_MODULE_INSTALL_DIR})

@@ -13,7 +13,8 @@ class LeosacConan(ConanFile):
                "libcurl/7.80.0", \
                "libscrypt/1.22", \
                "tclap/1.2.4", \
-               "nlohmann_json/3.10.5"
+               "nlohmann_json/3.10.5", \
+               "spdlog/1.9.2"
 
     generators = 'cmake'
     default_options = {
