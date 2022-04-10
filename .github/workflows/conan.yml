@@ -1,0 +1,103 @@
+name: Conan Workflow
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+  conan_build_x64:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Install dependencies
+        run: >
+          sudo apt-get install -y cmake build-essential pkg-config
+          apt-utils g++-9 gcc-10 g++-10 git odb python3 python3-pip
+      - run: sudo pip3 install conan
+      - name: Export vendored conan packages
+        run: >
+          (cd vendor/libodb && conan export .) &&
+          (cd vendor/libodb-boost && conan export .) &&
+          (cd vendor/libodb-pgsql && conan export .) &&
+          (cd vendor/libodb-sqlite && conan export .) &&
+          (cd vendor/libscrypt && conan export .)
+
+      - name: Create build directory
+        run: mkdir build_x64
+      - name: Install conan dependencies
+        working-directory: build_x64
+        run: conan install --build missing --profile:build ../conan/profile --profile:host ../conan/profile ..
+      - name: Build
+        working-directory: build_x64
+        run: conan build ..
+      - name: Package
+        working-directory: build_x64
+        run: conan package ..
+
+  conan_build_arm64:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Install dependencies
+        run: >
+          sudo apt-get install -y cmake build-essential pkg-config
+          apt-utils g++-9 gcc-10 g++-10 git odb python3 python3-pip
+          gcc-10-aarch64-linux-gnu g++-10-aarch64-linux-gnu
+      - run: sudo pip3 install conan
+      - name: Export vendored conan packages
+        run: >
+          (cd vendor/libodb && conan export .) &&
+          (cd vendor/libodb-boost && conan export .) &&
+          (cd vendor/libodb-pgsql && conan export .) &&
+          (cd vendor/libodb-sqlite && conan export .) &&
+          (cd vendor/libscrypt && conan export .)
+
+      - name: Create build directory
+        run: mkdir build_arm64
+      - name: Install conan dependencies
+        working-directory: build_arm64
+        run: conan install --build missing --profile:build ../conan/profile --profile:host ../conan/profilearm64 ..
+      - name: Build
+        working-directory: build_arm64
+        run: conan build ..
+      - name: Package
+        working-directory: build_arm64
+        run: conan package ..
+
+  conan_build_arm-linux-gnueabi:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Install dependencies
+        run: >
+          sudo apt-get install -y cmake build-essential pkg-config
+          apt-utils g++-9 gcc-10 g++-10 git odb python3 python3-pip
+          g++-10-arm-linux-gnueabi gcc-10-arm-linux-gnueabi
+      - run: sudo pip3 install conan
+      - name: Export vendored conan packages
+        run: >
+          (cd vendor/libodb && conan export .) &&
+          (cd vendor/libodb-boost && conan export .) &&
+          (cd vendor/libodb-pgsql && conan export .) &&
+          (cd vendor/libodb-sqlite && conan export .) &&
+          (cd vendor/libscrypt && conan export .)
+
+      - name: Create build directory
+        run: mkdir build_arm32
+      - name: Install conan dependencies
+        working-directory: build_arm32
+        run: conan install --build missing --profile:build ../conan/profile --profile:host ../conan/profilearm32 ..
+      - name: Build
+        working-directory: build_arm32
+        run: conan build ..
+      - name: Package
+        working-directory: build_arm32
+        run: conan package ..
