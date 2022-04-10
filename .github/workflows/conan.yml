@@ -7,21 +7,6 @@ on:
     branches: [ develop ]
 
 jobs:
-  # Sadly we make an independent run for unittest.
-  unittest_x64:
-    runs-on: self-hosted
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: recursive
-      - uses: ./.github/actions/install-build-deps
-      - uses: ./.github/actions/conan-install-build-package-for-profile
-        with:
-          host-profile: ${{ github.workspace }}/conan/profile
-          build-dir: build_x64
-      - name: Run ctest
-        run: ctest .
-
   build_x64:
     runs-on: self-hosted
     steps:
@@ -33,14 +18,29 @@ jobs:
         with:
           host-profile: ${{ github.workspace }}/conan/profile
           build-dir: build_x64
-      - uses: actions/upload-artifact@v3
+#      - uses: actions/upload-artifact@v3
+#        with:
+#          name: leosac-package-x64
+#          path: build_x64/package/
+#          retention-days: 2
+      - name: Run ctest
+        run: ctest .
+        working-directory: build_x64
+      - name: Aggregate unit test result
+        if: success() || failure()
+        run: mkdir -p agg && jrm agg/result.xml *.xml
+        working-directory: build_x64/gtest_result/
+      - uses: dorny/test-reporter@v1
+        if: success() || failure()
         with:
-          name: leosac-package-x64
-          path: build_x64/package/
-          retention-days: 2
+          name: UnitTest
+          path: ${{ github.workspace }}/build_x64/gtest_result/agg/*.xml
+          reporter: java-junit
+          fail-on-error: 'false'
 
   build_arm64:
     runs-on: self-hosted
+    if: ${{ false }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -53,14 +53,15 @@ jobs:
         with:
           host-profile: ${{ github.workspace }}/conan/profilearm64
           build-dir: build_arm64
-      - uses: actions/upload-artifact@v3
-        with:
-          name: leosac-package-arm64
-          path: build_arm64/package/
-          retention-days: 2
+#      - uses: actions/upload-artifact@v3
+#        with:
+#          name: leosac-package-arm64
+#          path: build_arm64/package/
+#          retention-days: 2
 
   build_arm-linux-gnueabi:
     runs-on: self-hosted
+    if: ${{ false }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -73,8 +74,8 @@ jobs:
         with:
           host-profile: ${{ github.workspace }}/conan/profilearm32
           build-dir: build_arm32
-      - uses: actions/upload-artifact@v3
-        with:
-          name: leosac-package-arm32
-          path: build_arm32/package/
-          retention-days: 2
+#      - uses: actions/upload-artifact@v3
+#        with:
+#          name: leosac-package-arm32
+#          path: build_arm32/package/
+#          retention-days: 2
