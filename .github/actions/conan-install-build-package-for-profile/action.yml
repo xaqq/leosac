@@ -1,0 +1,29 @@
+name: 'Conan install-build-package'
+description: ''
+inputs:
+  host-profile:
+    description: 'Conan host profile (target binary platform)'
+    required: true
+  build-dir:
+    description: 'Build directory'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Create build directory
+      run: mkdir ${{ inputs.build-dir }}
+      shell: bash
+    - name: Install conan dependencies
+      working-directory: ${{ inputs.build-dir }}
+      run: conan install --build missing --profile:build ../conan/profile --profile:host ${{ inputs.host-profile }} ..
+      shell: bash
+    - name: Build
+      working-directory: ${{ inputs.build-dir }}
+      run: conan build ..
+      shell: bash
+    - name: Package
+      working-directory: ${{ inputs.build-dir }}
+      run: conan package ..
+      shell: bash
+
