@@ -19,6 +19,7 @@ class LeosacConan(ConanFile):
                "date/3.0.1", \
                "websocketpp/0.8.2", \
                "gtest/1.11.0", \
+               "libgpiod/1.6.3"
 
     options = {
         'build_test': [True, False]
