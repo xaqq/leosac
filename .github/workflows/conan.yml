@@ -8,7 +8,7 @@ on:
 
 jobs:
   build_x64:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
@@ -24,23 +24,30 @@ jobs:
 #          path: build_x64/package/
 #          retention-days: 2
       - name: Create Docker Image
-        run: docker create -t leosac_test -f tests/Dockerfile build_x64/package
+        run: docker build -t ghcr.io/${{ github.actor }}/leosac_test:${{ github.sha }} -f tests/Dockerfile build_x64/package
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push docker image
+        run: docker push ghcr.io/${{ github.actor }}/leosac_test:${{ github.sha }}
       - name: Run ctest
         run: ctest . || true
         working-directory: build_x64
       - name: Aggregate unit test result
-        run: mkdir -p agg && jrm agg/result.xml *.xml
-        working-directory: build_x64/gtest_result/
+        run: mkdir -p gtest_result/agg && python3 ../merge_result.py gtest_result/*.xml > gtest_result/agg/result.xml
+        working-directory: build_x64/
       - uses: dorny/test-reporter@v1
         with:
-          name: UnitTest
+          name: Unit Tests Results
           path: ${{ github.workspace }}/build_x64/gtest_result/agg/*.xml
           reporter: java-junit
           fail-on-error: 'false'
 
   build_arm64:
-    runs-on: self-hosted
-    if: ${{ false }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
@@ -60,8 +67,7 @@ jobs:
 #          retention-days: 2
 
   build_arm-linux-gnueabi:
-    runs-on: self-hosted
-    if: ${{ false }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
@@ -79,20 +85,20 @@ jobs:
 #          name: leosac-package-arm32
 #          path: build_arm32/package/
 #          retention-days: 2
-      - uses: actions/upload-artifact@v3
-        with:
-          name: leosac-package-arm32
-          path: build_arm32/package/
-          retention-days: 2
 
-  integration_test:
-    runs-on: self-hosted
+  run_integration_tests:
+    runs-on: ubuntu-latest
     needs: [build_x64]
     steps:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
-      - uses: ./.github/actions/install-build-deps
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Install MS package (keys and such)
         run: >
           wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && 
@@ -105,7 +111,15 @@ jobs:
           sudo apt-get update &&
           sudo apt-get install -y dotnet-sdk-6.0
       - name: Configure docker if needed
-        run: docker swarn init || true
+        run: docker swarm init || true
+      - name: Pull leoasc test image
+        run: docker pull ghcr.io/${{ github.actor }}/leosac_test:${{ github.sha }} && docker tag ghcr.io/${{ github.actor }}/leosac_test:${{ github.sha }} leosac_test
       - name: Run integrations tests
-        run: LEOSAC_INTEGRATION_TEST_DATA_ROOT=${{ github.workspace }}/tests dotnet test
+        run: LEOSAC_INTEGRATION_TEST_DATA_ROOT=${{ github.workspace }}/tests dotnet test --logger "trx;LogFileName=test-results.trx"
         working-directory: LeosacSharp
+      - uses: dorny/test-reporter@v1
+        with:
+          name: Integration Tests Results
+          path: LeosacSharp/LeosacIntegrationTests/TestResults/test-results.trx
+          reporter: dotnet-trx
+          fail-on-error: 'false'
