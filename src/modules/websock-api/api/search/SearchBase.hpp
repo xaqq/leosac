@@ -83,7 +83,7 @@ struct EntitySearchTool
     build_query(const std::string &partial)
     {
         Query q(Query::alias.like("%" + partial + "%"));
-        return std::move(q);
+        return q;
     }
 
     template <typename T>
@@ -91,7 +91,7 @@ struct EntitySearchTool
     build_query(const std::string &partial)
     {
         Query q(Query::name.like("%" + partial + "%"));
-        return std::move(q);
+        return q;
     }
 
     template <typename T>
@@ -99,7 +99,7 @@ struct EntitySearchTool
     build_query(const std::string &partial)
     {
         Query q(Query::username.like("%" + partial + "%"));
-        return std::move(q);
+        return q;
     }
 
     void search_and_append(DBPtr db, EntitySet &entities, const std::string &partial)

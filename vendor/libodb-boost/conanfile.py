@@ -9,7 +9,7 @@ class LibOdbBoostConan(ConanFile):
     settings = "os", "arch", "compiler", "build_type"
     name = "libodb_boost"
     version = "2.4.0"
-    requires = "libodb/2.4.0", "boost/1.74.0"
+    requires = "libodb/2.4.0", "boost/1.78.0"
     default_options = {'boost:shared': True}
     generators = "AutotoolsToolchain"
 
