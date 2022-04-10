@@ -4,7 +4,9 @@ project(LEOSAC)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS)
 #set(CMAKE_SKIP_RPATH 1)
-set(CMAKE_INSTALL_RPATH "")
+
+set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib/")
+set(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
 
 # Use ccache if available
 find_program(CCACHE_BIN ccache)

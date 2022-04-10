@@ -22,7 +22,8 @@ class LibOdbPGSQLConan(ConanFile):
 
         # Point to libpq and libodb
         tc.cxxflags = ['-I{}/include'.format(libpq_root),
-                       '-I{}/include'.format(libodb_root) ]
+                       '-I{}/include'.format(libodb_root),
+                       "-Wl,-rpath='\$\$ORIGIN/../lib'"]
         tc.ldflags = ['-L{}/lib'.format(libpq_root),
                       '-L{}/lib'.format(libodb_root)]
         tc.generate()    
