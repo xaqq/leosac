@@ -5,7 +5,8 @@ class LeosacConan(ConanFile):
     settings = "os", "arch", "compiler", "build_type"    
     name = "leosac"
     version = "0.0.8"
-    requires = "zmqpp/4.2.0", "libodb_pgsql/2.4.0", \
+    requires = "zmqpp/4.2.0", \
+               "libodb_pgsql/2.4.0", \
                "libodb_sqlite/2.4.0", \
                "libodb_boost/2.4.0", \
                "boost/1.74.0", \
@@ -15,7 +16,8 @@ class LeosacConan(ConanFile):
                "tclap/1.2.4", \
                "nlohmann_json/3.10.5", \
                "spdlog/1.9.2", \
-               "date/3.0.1"
+               "date/3.0.1", \
+               "websocketpp/0.8.2"
 
     generators = 'cmake'
     default_options = {
