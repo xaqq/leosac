@@ -5,7 +5,12 @@ include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS)
 #set(CMAKE_SKIP_RPATH 1)
 set(CMAKE_INSTALL_RPATH "")
-set(CMAKE_CXX_COMPILER_LAUNCHER ccache)
+
+# Use ccache if available
+find_program(CCACHE_BIN ccache)
+if (CCACHE_BIN)
+    set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_BIN})
+endif()
 
 # Version definitions
 add_definitions(-DLEOSAC_VERSION_MAJOR=0)
