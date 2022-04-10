@@ -1,5 +1,11 @@
-cmake_minimum_required(VERSION 2.8.8 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.18.4 FATAL_ERROR)
 project(LEOSAC)
+
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup(TARGETS)
+#set(CMAKE_SKIP_RPATH 1)
+set(CMAKE_INSTALL_RPATH "")
+set(CMAKE_CXX_COMPILER_LAUNCHER ccache)
 
 # Version definitions
 add_definitions(-DLEOSAC_VERSION_MAJOR=0)
@@ -9,27 +15,6 @@ add_definitions(-DLEOSAC_VERSION_PATCH=0)
 set(CPACK_PACKAGE_VERSION_MAJOR "0")
 set(CPACK_PACKAGE_VERSION_MINOR "8")
 set(CPACK_PACKAGE_VERSION_PATCH "0")
-
-include(CPack)
-
-set(CMAKE_INSTALL_RPATH "\$ORIGN:\$ORIGIN/../lib/leosac")
-set(LEOSAC_CROSS_COMPILE 0)
-if (CMAKE_TOOLCHAIN_FILE)
-    # a bit hacky -- if a toolchain file si present, assume
-    # cross compilation to raspberry pi
-    set(LEOSAC_CROSS_COMPILE 1)
-    message(WARNING "CROSS COMPILE detected.")
-
-    # We configure RPATH handling here, assuming that the fakeroot on
-    # the raspberry will be located at /opt/rpi_fakeroot
-    set(CMAKE_SKIP_BUILD_RPATH FALSE)
-    set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
-
-    # Set RPATH to "binary directory" (for dev mode) and "/opt/rpi_faekroot"
-    # for "installed" mode
-    set(CMAKE_INSTALL_RPATH "/opt/rpi_fakeroot/lib:${CMAKE_INSTALL_RPATH}")
-    set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-endif ()
 
 # Avoid source tree pollution
 if (CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
@@ -41,29 +26,20 @@ if (CMAKE_BUILD_TYPE STREQUAL "")
     message(WARNING "Please specify a build type\nExample: cmake .. -DCMAKE_BUILD_TYPE=Debug")
 endif ()
 
-set(LEOSAC_BUILD_CMAKE_ZMQ true CACHE BOOL "Build Libzmq through its CMakeFile")
+#set(LEOSAC_BUILD_CMAKE_ZMQ true CACHE BOOL "Build Libzmq through its CMakeFile")
 
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_STATIC_RUNTIME OFF)
 set(Boost_USE_MULTITHREADED ON)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
-find_package(CXX11 REQUIRED)
-find_package(TCLAP REQUIRED)
-find_package(Boost 1.62 REQUIRED date_time system serialization regex filesystem)
-find_package(LibScrypt REQUIRED)
-find_package(PkgConfig REQUIRED)
-find_package(SQLite REQUIRED)
-find_package(CURL REQUIRED)
-find_package(OpenSSL REQUIRED)
-
-include_directories(${TCLAP_INCLUDE_DIR} ${Boost_INCLUDE_DIR} ${LIBSCRYPT_INCLUDE_DIR}
-                    ${SQLITE_INCLUDE_DIR} ${CURL_INCLUDE_DIR} ${OPENSSL_INCLUDE_DIR})
+#find_package(PkgConfig REQUIRED)
 
 # ODB stuff
-find_package(ODB REQUIRED COMPONENTS pgsql sqlite boost)
+#find_package(ODB REQUIRED ODB_EXECUTABLE)
 
-include(${ODB_USE_FILE})
+set(ODB_EXECUTABLE odb)
+include(${CMAKE_CURRENT_LIST_DIR}/cmake/UseODB.cmake)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wno-undef -Wno-shadow -Wno-unknown-pragmas")
 
@@ -80,7 +56,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${LEOSAC_BINARY_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${LEOSAC_BINARY_DIR})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${LEOSAC_BINARY_DIR})
 
-add_subdirectory(deps/zmqpp)
 add_subdirectory(src)
 add_subdirectory(cfg)
 

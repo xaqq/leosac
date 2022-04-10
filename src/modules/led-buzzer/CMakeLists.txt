@@ -22,4 +22,4 @@ target_include_directories(${LEDBUZZER_BIN} PUBLIC
         ${ODB_COMPILE_OUTPUT_DIR}
         )
 
-target_link_libraries(${LEDBUZZER_BIN} websock-api)
+target_link_libraries(${LEDBUZZER_BIN} PUBLIC websock-api CONAN_PKG::zmqpp CONAN_PKG::boost CONAN_PKG::libodb)

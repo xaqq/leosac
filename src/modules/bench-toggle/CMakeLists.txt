@@ -9,6 +9,8 @@ add_library(${BENCHTOGGLE_BIN} SHARED ${BENCHTOGGLE_SRCS})
 set_target_properties(${BENCHTOGGLE_BIN} PROPERTIES
     COMPILE_FLAGS "${MODULE_COMPILE_FLAGS}"
     )
-#target_include_directories(${BENCHTOGGLE_BIN} PUBLIC ${CMAKE_SOURCE_DIR}/src "${CMAKE_SOURCE_DIR}/zmqpp/src")
+
+target_link_libraries(${BENCHTOGGLE_BIN} PUBLIC
+        CONAN_PKG::zmqpp CONAN_PKG::boost CONAN_PKG::libodb)
 
 install(TARGETS ${BENCHTOGGLE_BIN} DESTINATION ${LEOSAC_MODULE_INSTALL_DIR})

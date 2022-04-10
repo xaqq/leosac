@@ -10,9 +10,12 @@ add_library(${MONITOR_BIN} SHARED ${MONITOR_SRCS})
 set_target_properties(${MONITOR_BIN} PROPERTIES
     COMPILE_FLAGS "${MODULE_COMPILE_FLAGS}"
     )
-#target_include_directories(${PERSISTENTMONITOR_BIN} PUBLIC ${CMAKE_SOURCE_DIR}/src "${CMAKE_SOURCE_DIR}/zmqpp/src")
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/ping.sh DESTINATION ${LEOSAC_BINARY_DIR})
+
+
+target_link_libraries(${MONITOR_BIN} PUBLIC
+        CONAN_PKG::zmqpp CONAN_PKG::boost CONAN_PKG::libodb)
 
 install(TARGETS ${MONITOR_BIN} DESTINATION ${LEOSAC_MODULE_INSTALL_DIR})
 

@@ -17,13 +17,21 @@ set(OdbCMake_ODB_HEADERS_TOOLS
         ${CMAKE_SOURCE_DIR}/src/tools/Uuid.hpp
         )
 
+# For ODB compiler invokation
+set(ALL_CONAN_INCLUDE_DIRS
+        -I ${CONAN_INCLUDE_DIRS_ZEROMQ}
+        -I ${CONAN_INCLUDE_DIRS_ZMQPP}
+        -I ${CONAN_INCLUDE_DIRS_BOOST}
+        -I ${CONAN_INCLUDE_DIRS_LIBSCRYPT}
+        )
+
 set(LEOSAC_ODB_INCLUDE_DIRS
-        ${CMAKE_SOURCE_DIR}/deps/zmqpp/src/
         ${CMAKE_SOURCE_DIR}/src
         ${CMAKE_SOURCE_DIR}/deps/flagset
         ${CMAKE_SOURCE_DIR}/deps/date/include
-        ${ZEROMQ_INCLUDE_DIR}
         ${CMAKE_SOURCE_DIR}/src/db
+
+        ${CONAN_INCLUDE_DIRS}
         )
 
 set(OdbCMake_SOURCES_TOOLS "")
@@ -201,18 +209,24 @@ add_library(leosac_db SHARED
 
 target_include_directories(leosac_db PRIVATE
         ${CMAKE_SOURCE_DIR}/src
-        ${CMAKE_SOURCE_DIR}/deps/zmqpp/src
         ${CMAKE_SOURCE_DIR}/deps/flagset
         ${CMAKE_SOURCE_DIR}/deps/date/include
         ${CMAKE_BINARY_DIR}/odb_gen
-        ${ZEROMQ_INCLUDE_DIR}
         ${ODB_INCLUDE_DIRS}
         )
 
-target_link_libraries(leosac_db ${ODB_LIBRARIES} ${Boost_LIBRARIES})
+target_link_libraries(leosac_db PUBLIC
+        CONAN_PKG::libscrypt
+        CONAN_PKG::zmqpp
+        CONAN_PKG::libodb_pgsql
+        CONAN_PKG::libodb_sqlite
+        CONAN_PKG::libodb_boost
+        CONAN_PKG::boost
+        CONAN_PKG::sqlite3
+        )
 
 if (LEOSAC_CROSS_COMPILE)
-    set(__LEOSAC_SQL_GENERATION_ADDITIONAL_INCLUDES -I ${CMAKE_SYSROOT}/include)
+    set(__LEOSAC_SQL_GENERATION_ADDITIONAL_INCLUDES ${__LEOSAC_SQL_GENERATION_ADDITIONAL_INCLUDES} -I ${CMAKE_SYSROOT}/include)
 endif()
 
 set(LEOSAC_DATABASE_CORE_HEADERS
@@ -243,10 +257,10 @@ add_custom_command(
         --std c++14
         -I ${CMAKE_SOURCE_DIR}/deps/flagset
         -I ${CMAKE_SOURCE_DIR}/deps/date/include
-        -I ${CMAKE_SOURCE_DIR}/deps/zmqpp/src
         -I ${CMAKE_SOURCE_DIR}/src
         -I ${CMAKE_SOURCE_DIR}/src/db
         ${__LEOSAC_SQL_GENERATION_ADDITIONAL_INCLUDES}
+        ${ALL_CONAN_INCLUDE_DIRS}
         --schema-format separate
         --schema-format sql
         --generate-schema-only

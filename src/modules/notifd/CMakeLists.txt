@@ -20,7 +20,7 @@ odb_compile(OdbCMake_SOURCES
         SCHEMA_FORMAT embedded
         SCHEMA_NAME module_NOTIFD
         PROFILE "boost/date-time"
-        INCLUDE ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/deps/flagset
+        INCLUDE ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/deps/flagset ${CONAN_INCLUDE_DIRS}
         INCLUDE_REGEX %tools/\(.+\)_odb_inline\(.*\).h%$1_odb_inline$2.h%
         %tools/\(.+\)_odb\(.*\).h%$1_odb$2.h%
         %core/auth/\(.+\)_odb_inline\(.*\).h%$1_odb_inline$2.h%
@@ -49,6 +49,6 @@ target_include_directories(${NOTIFD_BIN} PUBLIC
         ${ODB_COMPILE_OUTPUT_DIR}
         )
 
-target_link_libraries(${NOTIFD_BIN})
+target_link_libraries(${NOTIFD_BIN} PUBLIC CONAN_PKG::zmqpp CONAN_PKG::boost CONAN_PKG::libodb)
 
 install(TARGETS ${NOTIFD_BIN} DESTINATION ${LEOSAC_MODULE_INSTALL_DIR})

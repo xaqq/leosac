@@ -226,12 +226,9 @@ endif()
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
 ${CMAKE_SOURCE_DIR}/deps/libpifacedigital/src/
 ${CMAKE_SOURCE_DIR}/deps/libmcp23s17/src/
-${CMAKE_SOURCE_DIR}/deps/zmqpp/src/
 ${CMAKE_SOURCE_DIR}/deps/spdlog/include
 ${CMAKE_SOURCE_DIR}/deps/flagset
-${CMAKE_SOURCE_DIR}/deps/json/include
-${Boost_INCLUDE_DIRS}
-)
+${CMAKE_SOURCE_DIR}/deps/json/include)
 
 #Set compilation flags for current target
 set_target_properties(${LEOSAC_BIN} PROPERTIES
@@ -240,10 +237,18 @@ set_target_properties(${LEOSAC_BIN} PROPERTIES
 set_target_properties(${LEOSAC_LIB} PROPERTIES
     COMPILE_FLAGS "${LEOSAC_COMPILE_FLAGS}")
 
-target_link_libraries(${LEOSAC_BIN} ${LEOSAC_LIB} backtrace)
-target_link_libraries(${LEOSAC_LIB} dl pthread zmqpp ${Boost_LIBRARIES}
-        ${ODB_LIBRARIES} backtrace scrypt
+target_link_libraries(${LEOSAC_BIN} PUBLIC ${LEOSAC_LIB}
+        CONAN_PKG::tclap
+        CONAN_PKG::libscrypt
+        )
+target_link_libraries(${LEOSAC_LIB} PUBLIC
+        dl pthread
+        backtrace
         leosac_db
+        CONAN_PKG::boost
+        CONAN_PKG::zmqpp
+        CONAN_PKG::openssl
+        CONAN_PKG::libscrypt
         )
 
 # Somehow, cross compile requires us to link against libcrypto
@@ -268,5 +273,5 @@ install(TARGETS ${LEOSAC_LIB} DESTINATION lib)
 # Build modules
 if(LEOSAC_BUILD_MODULES)
     add_subdirectory(modules)
-    add_subdirectory(altmodules)
+    #add_subdirectory(altmodules)
 endif()
