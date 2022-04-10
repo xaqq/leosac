@@ -12,15 +12,12 @@ install/
 debian/
 obj-*/
 
-#IDE workspace stuff
-.idea/workspace.xml
-
 ## This is generated Doxygen doc.
 ## Or files attached to release
 doc/output
 
 ## IDE stuff
-.idea/dictionaries/*
+.idea/
 
 # For now we don't care about ODB xml file.
 # Later we'll need them tho.
