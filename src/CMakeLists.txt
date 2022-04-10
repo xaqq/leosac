@@ -233,7 +233,6 @@ set_target_properties(${LEOSAC_LIB} PROPERTIES
 
 target_link_libraries(${LEOSAC_BIN} PUBLIC ${LEOSAC_LIB}
         CONAN_PKG::tclap
-        CONAN_PKG::libscrypt
         )
 target_link_libraries(${LEOSAC_LIB} PUBLIC
         dl pthread
@@ -243,6 +242,7 @@ target_link_libraries(${LEOSAC_LIB} PUBLIC
         CONAN_PKG::zmqpp
         CONAN_PKG::openssl
         CONAN_PKG::libscrypt
+        CONAN_PKG::nlohmann_json
         )
 
 # Somehow, cross compile requires us to link against libcrypto
