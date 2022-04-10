@@ -20,6 +20,7 @@
 #include "exception/ModelException.hpp"
 #include "tools/Schedule.hpp"
 #include "gtest/gtest.h"
+#include <boost/locale.hpp>
 
 using namespace Leosac;
 using namespace Leosac::Tools;
@@ -57,5 +58,39 @@ TEST(TestGroupValidator, name_invalid_char)
     ASSERT_THROW({ s.name("aaaé"); }, ModelException);
     ASSERT_THROW({ s.name("aaa aaa"); }, ModelException);
 }
+
+TEST(TestGroupValidator, name_invalid_char_exception_message)
+{
+    bool has_thrown = false;
+    Schedule s;
+    try
+    {
+        s.name("aaa$");
+    }
+    catch (const ModelException &e)
+    {
+        has_thrown = true;
+        ASSERT_EQ(std::string("Usage of unauthorized character: $"),
+                  e.errors().at(0).message);
+    }
+    ASSERT_TRUE(has_thrown);
 }
+
+TEST(TestGroupValidator, name_invalid_char_exception_message_invalid_utf8)
+{
+    bool has_thrown = false;
+    Schedule s;
+    try
+    {
+        s.name("aaaä");
+    }
+    catch (const ModelException &e)
+    {
+        has_thrown = true;
+        ASSERT_EQ(std::string("Usage of non ascii character starting with byte 0xC3"),
+                  e.errors().at(0).message);
+    }
+    ASSERT_TRUE(has_thrown);
 }
+} // namespace Test
+} // namespace Leosac

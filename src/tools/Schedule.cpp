@@ -21,6 +21,7 @@
 #include "AssertCast.hpp"
 #include "exception/ModelException.hpp"
 #include "tools/log.hpp"
+#include <boost/locale.hpp>
 
 using namespace Leosac::Tools;
 
@@ -116,11 +117,18 @@ void ScheduleValidator::validate_name(const std::string &name)
     }
     for (const auto &c : name)
     {
+        if (!isascii(c))
+        {
+            throw ModelException(
+                "data/attributes/name",
+                fmt::format("Usage of non ascii character starting with byte 0x{:X}",
+                            static_cast<uint8_t>(c)));
+        }
         if (!isalnum(c) && (c != '_' && c != '-' && c != '.'))
         {
             throw ModelException(
                 "data/attributes/name",
-                BUILD_STR("Usage of unauthorized character: " << c));
+                fmt::format("Usage of unauthorized character: {}", c));
         }
     }
 }
