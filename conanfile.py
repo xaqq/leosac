@@ -21,7 +21,7 @@ class LeosacConan(ConanFile):
         'zmqpp:shared': True,
         'boost:without_stacktrace': True }
 
-    exports_sources = "CMakeLists.txt", "cmake*", "src*", "scripts*", "cfg*", "deps*"
+    exports_sources = "CMakeLists.txt", "cmake*", "src*", "scripts*", "cfg*", "deps*", "test*"
     keep_imports = True
 
     def build(self):
