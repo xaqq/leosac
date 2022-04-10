@@ -3,8 +3,6 @@ find_package(GTest REQUIRED)
 list(APPEND LEOSAC_TEST_INCLUDE_DIRECTORIES
         ${CMAKE_SOURCE_DIR}/src
         ${GTEST_INCLUDE_DIRS}
-        ${CMAKE_SOURCE_DIR}/deps/spdlog/include
-        ${CMAKE_SOURCE_DIR}/deps/json/include
         )
 list(APPEND LEOSAC_TEST_LIBRARIES leosac_lib ${GTEST_BOTH_LIBRARIES})
 
