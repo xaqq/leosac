@@ -18,12 +18,12 @@ set(OdbCMake_ODB_HEADERS
 
 
 set(LEOSAC_ODB_INCLUDE_DIRS
-        ${CMAKE_SOURCE_DIR}/deps/zmqpp/src/
         ${CMAKE_SOURCE_DIR}/src
         ${CMAKE_SOURCE_DIR}/deps/flagset
         ${CMAKE_SOURCE_DIR}/deps/date/include
-        ${ZEROMQ_INCLUDE_DIR}
         ${CMAKE_SOURCE_DIR}/src/db
+
+        ${CONAN_INCLUDE_DIRS}
         )
 
 set(OdbCMake_SOURCES "")
@@ -58,6 +58,6 @@ target_include_directories(${SMTP_BIN} PUBLIC
         ${ODB_COMPILE_OUTPUT_DIR}
         )
 
-target_link_libraries(${SMTP_BIN} curl websock-api)
+target_link_libraries(${SMTP_BIN} PUBLIC websock-api CONAN_PKG::zmqpp CONAN_PKG::libcurl)
 
 install(TARGETS ${SMTP_BIN} DESTINATION ${LEOSAC_MODULE_INSTALL_DIR})

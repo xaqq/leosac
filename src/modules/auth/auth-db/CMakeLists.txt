@@ -11,12 +11,12 @@ set(OdbCMake_ODB_HEADERS
         )
 
 set(LEOSAC_ODB_INCLUDE_DIRS
-        ${CMAKE_SOURCE_DIR}/deps/zmqpp/src/
         ${CMAKE_SOURCE_DIR}/src
         ${CMAKE_SOURCE_DIR}/deps/flagset
         ${CMAKE_SOURCE_DIR}/deps/date/include
-        ${ZEROMQ_INCLUDE_DIR}
         ${CMAKE_SOURCE_DIR}/src/db
+
+        ${CONAN_INCLUDE_DIRS}
         )
 
 set(OdbCMake_SOURCES "" AuthDBInstance.cpp AuthDBInstance.hpp)
@@ -52,6 +52,10 @@ target_include_directories(${AUTH-DB_BIN} PUBLIC
         ${ODB_COMPILE_OUTPUT_DIR}
         )
 
-target_link_libraries(${AUTH-DB_BIN} websock-api)
+target_link_libraries(${AUTH-DB_BIN} PUBLIC
+        websock-api
+        CONAN_PKG::zmqpp
+        CONAN_PKG::boost
+        )
 
 install(TARGETS ${AUTH-DB_BIN} DESTINATION ${LEOSAC_MODULE_INSTALL_DIR})

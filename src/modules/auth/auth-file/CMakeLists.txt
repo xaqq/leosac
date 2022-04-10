@@ -13,4 +13,11 @@ set_target_properties(${AUTH-FILE_BIN} PROPERTIES
     COMPILE_FLAGS "${MODULE_COMPILE_FLAGS}"
     )
 
+target_link_libraries(${AUTH-FILE_BIN} PUBLIC
+        CONAN_PKG::zmqpp
+        CONAN_PKG::boost
+        CONAN_PKG::libodb
+        CONAN_PKG::libscrypt
+        )
+
 install(TARGETS ${AUTH-FILE_BIN} DESTINATION ${LEOSAC_MODULE_INSTALL_DIR})

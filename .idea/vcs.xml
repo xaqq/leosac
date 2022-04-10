@@ -2,6 +2,13 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/deps/date" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/deps/flagset" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/deps/json" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/deps/libmcp23s17" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/deps/libpifacedigital" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/deps/libzmq" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/deps/spdlog" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/deps/websocketpp" vcs="Git" />
   </component>
 </project>
-

@@ -48,9 +48,9 @@ set_target_properties(${WEBSOCK_API_BIN} PROPERTIES
         )
 
 target_link_libraries(${WEBSOCK_API_BIN}
-        ${Boost_LIBRARIES}
         leosac_db
         leosac_lib
+        CONAN_PKG::boost
         )
 
 target_include_directories(${WEBSOCK_API_BIN}

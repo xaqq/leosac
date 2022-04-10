@@ -13,4 +13,7 @@ set_target_properties(${DOORMAN_BIN} PROPERTIES
     COMPILE_FLAGS "${MODULE_COMPILE_FLAGS}"
     )
 
+target_link_libraries(${DOORMAN_BIN} PUBLIC
+        CONAN_PKG::zmqpp CONAN_PKG::boost CONAN_PKG::libodb)
+
 install(TARGETS ${DOORMAN_BIN} DESTINATION ${LEOSAC_MODULE_INSTALL_DIR})

@@ -14,13 +14,12 @@ set(OdbCMake_ODB_HEADERS
         )
 
 set(LEOSAC_ODB_INCLUDE_DIRS
-        ${CMAKE_SOURCE_DIR}/deps/zmqpp/src/
         ${CMAKE_SOURCE_DIR}/src
         ${CMAKE_SOURCE_DIR}/deps/flagset
         ${CMAKE_SOURCE_DIR}/deps/date/include
         ${CMAKE_SOURCE_DIR}/deps/json/include/
-        ${ZEROMQ_INCLUDE_DIR}
         ${CMAKE_SOURCE_DIR}/src/db
+        ${CONAN_INCLUDE_DIRS}
         )
 
 set(OdbCMake_SOURCES "")
@@ -46,7 +45,8 @@ add_library(${PIFACEDIGITAL_BIN} SHARED
         ${OdbCMake_SOURCES}
         )
 
-target_link_libraries(${PIFACEDIGITAL_BIN} module_piface_deps websock-api)
+target_link_libraries(${PIFACEDIGITAL_BIN} PUBLIC module_piface_deps websock-api
+        CONAN_PKG::zmqpp CONAN_PKG::boost CONAN_PKG::libodb)
 
 set_target_properties(${PIFACEDIGITAL_BIN} PROPERTIES
         COMPILE_FLAGS "${MODULE_COMPILE_FLAGS}"
