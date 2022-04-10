@@ -71,7 +71,8 @@ class Service
         WSHandler wrapped_handler =
             [&, handler](const RequestContext &req_ctx) -> boost::optional<json> {
             std::packaged_task<boost::optional<json>(const RequestContext &)> pt(
-                [&](const RequestContext &req_ctx) { return handler(req_ctx); });
+                [&](const RequestContext &pt_req_ctx) { return handler(pt_req_ctx); });
+
             auto future = pt.get_future();
             io.post([&]() { pt(req_ctx); });
             return future.get();

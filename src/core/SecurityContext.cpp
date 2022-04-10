@@ -136,9 +136,9 @@ ExecutionContext::ExecutionContext(SecurityContext &sc)
 }
 
 ExecutionContext::ExecutionContext(SecurityContext &sc,
-                                   const Audit::IAuditEntryPtr &audit)
+                                   const Audit::IAuditEntryPtr &context_audit)
     : sec(sc)
-    , audit(audit)
+    , audit(context_audit)
 {
 }
 

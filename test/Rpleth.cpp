@@ -86,7 +86,7 @@ class RplethTest : public Helper::TestHelper
         assert(msg.parts() == 2);
         msg >> connection_identity;
         assert(msg.size(1) == 0);
-        return std::move(client);
+        return client;
     }
 
     /**

@@ -155,13 +155,13 @@ WiegandReaderModule::create_strategy(const WiegandReaderConfig &reader_cfg,
     auto pin_buffered = std::unique_ptr<PinReading>(new WiegandPinBuffered(reader));
 
     if (reader_cfg.mode == "SIMPLE_WIEGAND")
-        return std::move(simple_wiegand);
+        return simple_wiegand;
     else if (reader_cfg.mode == "WIEGAND_PIN_4BITS")
-        return std::move(pin_4bits);
+        return pin_4bits;
     else if (reader_cfg.mode == "WIEGAND_PIN_8BITS")
-        return std::move(pin_8bits);
+        return pin_8bits;
     else if (reader_cfg.mode == "WIEGAND_PIN_BUFFERED")
-        return std::move(pin_buffered);
+        return pin_buffered;
     else if (reader_cfg.mode == "WIEGAND_CARD_PIN_4BITS")
     {
         return std::unique_ptr<WiegandStrategy>(
