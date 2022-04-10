@@ -177,6 +177,14 @@ void GroupValidator::validate_name(const std::string &name)
     }
     for (const auto &c : name)
     {
+        if (!isascii(c))
+        {
+            throw ModelException(
+                "data/attributes/name",
+                fmt::format("Usage of non ascii character starting with byte 0x{:X}",
+                            static_cast<uint8_t>(c)));
+        }
+
         if (!isalnum(c) && (c != '_' && c != '-' && c != '.'))
         {
             throw ModelException(

@@ -18,7 +18,7 @@ class LeosacConan(ConanFile):
                "spdlog/1.9.2", \
                "date/3.0.1", \
                "websocketpp/0.8.2", \
-               "gtest/1.11.0"
+               "gtest/1.11.0", \
 
     options = {
         'build_test': [True, False]
@@ -32,7 +32,7 @@ class LeosacConan(ConanFile):
         'zeromq:shared': True,
         'zmqpp:shared': True,
         'boost:without_stacktrace': True,
-        'boost:without_test': True
+        'boost:without_test': True,
     }
 
     exports_sources = "CMakeLists.txt", "cmake*", "src*", "scripts*", "cfg*", "deps*", "test*"
