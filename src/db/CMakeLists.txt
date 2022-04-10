@@ -206,11 +206,10 @@ add_library(leosac_db SHARED
         ${CMAKE_BINARY_DIR}/src/db/core-schema-pgsql.cxx
         )
 
-target_include_directories(leosac_db PRIVATE
+target_include_directories(leosac_db PUBLIC
         ${CMAKE_SOURCE_DIR}/src
         ${CMAKE_SOURCE_DIR}/deps/flagset
         ${CMAKE_BINARY_DIR}/odb_gen
-        ${ODB_INCLUDE_DIRS}
         )
 
 target_link_libraries(leosac_db PUBLIC

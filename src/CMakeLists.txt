@@ -184,13 +184,6 @@ add_library(${LEOSAC_LIB} SHARED
         ${OdbCMake_SOURCES_AUTH}
         )
 
-target_include_directories(${LEOSAC_LIB}
-        PUBLIC
-        ${ODB_INCLUDE_DIRS}
-        ${CMAKE_BINARY_DIR}/odb_gen/
-        ${CMAKE_SOURCE_DIR}/deps/flagset
-        )
-
 target_compile_definitions(${LEOSAC_LIB}
         PRIVATE
         -DSPDLOG_ENABLE_SYSLOG=1
@@ -221,11 +214,6 @@ if (CMAKE_BUILD_TYPE MATCHES "Release")
         set(LEOSAC_COMPILE_FLAGS "${LEOSAC_COMPILE_FLAGS} -Wall -Wextra -Wshadow -Wundef -O2")
     endif()
 endif()
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}
-${CMAKE_SOURCE_DIR}/deps/libpifacedigital/src/
-${CMAKE_SOURCE_DIR}/deps/libmcp23s17/src/
-${CMAKE_SOURCE_DIR}/deps/flagset)
 
 #Set compilation flags for current target
 set_target_properties(${LEOSAC_BIN} PROPERTIES

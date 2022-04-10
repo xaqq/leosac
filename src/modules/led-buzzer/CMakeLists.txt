@@ -15,10 +15,5 @@ set_target_properties(${LEDBUZZER_BIN} PROPERTIES
         )
 
 install(TARGETS ${LEDBUZZER_BIN} DESTINATION ${LEOSAC_MODULE_INSTALL_DIR})
-target_include_directories(${LEDBUZZER_BIN} PUBLIC
-        ${CMAKE_SOURCE_DIR}/src
-        ${ODB_INCLUDE_DIRS}
-        ${ODB_COMPILE_OUTPUT_DIR}
-        )
 
 target_link_libraries(${LEDBUZZER_BIN} PUBLIC websock-api   ${LEOSAC_MODULE_BASE_DEPENDENCIES} )

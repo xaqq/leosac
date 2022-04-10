@@ -51,12 +51,6 @@ set_target_properties(${SMTP_BIN} PROPERTIES
         COMPILE_FLAGS "${MODULE_COMPILE_FLAGS}"
         )
 
-target_include_directories(${SMTP_BIN} PUBLIC
-        ${CMAKE_SOURCE_DIR}/src
-        ${ODB_INCLUDE_DIRS}
-        ${ODB_COMPILE_OUTPUT_DIR}
-        )
-
 target_link_libraries(${SMTP_BIN} PUBLIC websock-api CONAN_PKG::zmqpp CONAN_PKG::libcurl)
 
 install(TARGETS ${SMTP_BIN} DESTINATION ${LEOSAC_MODULE_INSTALL_DIR})
