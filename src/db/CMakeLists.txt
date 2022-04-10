@@ -28,7 +28,6 @@ set(ALL_CONAN_INCLUDE_DIRS
 set(LEOSAC_ODB_INCLUDE_DIRS
         ${CMAKE_SOURCE_DIR}/src
         ${CMAKE_SOURCE_DIR}/deps/flagset
-        ${CMAKE_SOURCE_DIR}/deps/date/include
         ${CMAKE_SOURCE_DIR}/src/db
 
         ${CONAN_INCLUDE_DIRS}
@@ -210,7 +209,6 @@ add_library(leosac_db SHARED
 target_include_directories(leosac_db PRIVATE
         ${CMAKE_SOURCE_DIR}/src
         ${CMAKE_SOURCE_DIR}/deps/flagset
-        ${CMAKE_SOURCE_DIR}/deps/date/include
         ${CMAKE_BINARY_DIR}/odb_gen
         ${ODB_INCLUDE_DIRS}
         )
@@ -223,6 +221,7 @@ target_link_libraries(leosac_db PUBLIC
         CONAN_PKG::libodb_boost
         CONAN_PKG::boost
         CONAN_PKG::sqlite3
+        CONAN_PKG::date
         )
 
 if (LEOSAC_CROSS_COMPILE)
@@ -256,7 +255,6 @@ add_custom_command(
         --database sqlite
         --std c++14
         -I ${CMAKE_SOURCE_DIR}/deps/flagset
-        -I ${CMAKE_SOURCE_DIR}/deps/date/include
         -I ${CMAKE_SOURCE_DIR}/src
         -I ${CMAKE_SOURCE_DIR}/src/db
         ${__LEOSAC_SQL_GENERATION_ADDITIONAL_INCLUDES}
