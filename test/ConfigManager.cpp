@@ -240,7 +240,9 @@ int main(int argc, char **argv)
 
     // gtest shall leave us with our arguments.
     // argv[1] shall be the path to test data file
-    assert(argc == 2);
-    gl_data_path = std::string(argv[1]) + '/';
+    if (argc == 2)
+    {
+        gl_data_path = std::string(argv[1]) + '/';
+    }
     return RUN_ALL_TESTS();
 }

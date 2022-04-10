@@ -1,3 +1,5 @@
+include(GoogleTest)
+
 function(leosacCreateSingleSourceTest NAME)
 ## module we link against
 set(MODULES_LIB wiegand led-buzzer rpleth sysfsgpio auth-file tcp-notifier)
@@ -12,12 +14,12 @@ set(HELPER_SRC  helper/FakeGPIO.cpp helper/FakeWiegandReader.cpp)
             ${MODULES_LIB}
             CONAN_PKG::gtest
             )
-
-    ## pass the data folder as a parameter.
-    add_test(NAME ${TEST_NAME}
-        COMMAND $<TARGET_FILE:${TEST_NAME}> ${CMAKE_CURRENT_LIST_DIR}/data)
-    unset(TEST_NAME)
+    gtest_discover_tests(${TEST_NAME}
+            EXTRA_ARGS ${CMAKE_CURRENT_SOURCE_DIR}/data
+            XML_OUTPUT_DIR ${CMAKE_BINARY_DIR}/gtest_result)
+unset(TEST_NAME)
 endfunction()
+
 
 leosacCreateSingleSourceTest(version)
 leosacCreateSingleSourceTest(WiegandReader)
