@@ -164,8 +164,7 @@ void APISession::hook_before_request()
 
 void APISession::abort_session()
 {
-    auth_status_        = AuthStatus::NONE;
-    current_auth_token_ = nullptr;
+    clear_authentication();
 }
 
 Auth::UserId APISession::current_user_id() const
