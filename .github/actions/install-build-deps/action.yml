@@ -6,7 +6,10 @@ runs:
     - name: Install dependencies
       run: >
         sudo apt-get install -y cmake build-essential pkg-config
-        apt-utils g++-9 gcc-10 g++-10 git odb python3 python3-pip
+        apt-utils g++-9 gcc-10 g++-10 git odb python3 python3-pip npm
+      shell: bash
+    - name: Install jrm (merge junit report)
+      run: sudo npm install -g junit-report-merger
       shell: bash
     - run: sudo pip3 install conan
       shell: bash
