@@ -56,7 +56,7 @@ class value_traits<std::chrono::system_clock::time_point, id_timestamp>
     // Could somewhat map to std::time_point::max()
     static const long long pos_inf = 0x7fffffffffffffffLL;
 
-    static void set_value(TimePoint &v, image_type i, bool is_null)
+    static void set_value(TimePoint &v, image_type i, [[maybe_unused]] bool is_null)
     {
         // We cannot (AFAIK) support null date time.
         assert(!is_null);
@@ -136,7 +136,7 @@ class value_traits<std::chrono::system_clock::time_point, id_text>
     static constexpr const char *const TIME_POINT_MAX = "TIME_POINT_MAX";
 
     static void set_value(TimePoint &v, const details::buffer &b, std::size_t n,
-                          bool is_null)
+                          [[maybe_unused]] bool is_null)
     {
         assert(!is_null);
         std::string str_rep(b.data(), n);

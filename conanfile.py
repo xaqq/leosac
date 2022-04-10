@@ -9,7 +9,7 @@ class LeosacConan(ConanFile):
                "libodb_pgsql/2.4.0", \
                "libodb_sqlite/2.4.0", \
                "libodb_boost/2.4.0", \
-               "boost/1.74.0", \
+               "boost/1.78.0", \
                "openssl/1.1.1k", \
                "libcurl/7.80.0", \
                "libscrypt/1.22", \
@@ -19,7 +19,7 @@ class LeosacConan(ConanFile):
                "date/3.0.1", \
                "websocketpp/0.8.2", \
                "libgpiod/1.6.3", \
-               "zlib/1.2.11" # override
+               "zlib/1.2.12" # override
     
 
     options = {
