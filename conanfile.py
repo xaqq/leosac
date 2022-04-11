@@ -60,7 +60,11 @@ class LeosacConan(ConanFile):
     def package(self):
         cmake = CMake(self)
         cmake.install()
-        self.copy('*', src='lib', dst='lib')
+        self.copy('*', src='conanlibs', dst='lib', symlinks=True)
+        # Todo strip libraries.
 
     def imports(self):
+        # We copy in two places, make it easier for package() method.
+        # Not too great
         self.copy("lib*.so*", dst='lib', src="lib")
+        self.copy("lib*.so*", dst='conanlibs', src="lib")
