@@ -24,13 +24,13 @@ jobs:
 #          path: build_x64/package/
 #          retention-days: 2
       - name: Create Docker Image
-        run: docker create -t leosac_test -f tests/Dockerfile build_x64/package
+        run: docker build -t leosac_test -f tests/Dockerfile build_x64/package
       - name: Run ctest
         run: ctest . || true
         working-directory: build_x64
       - name: Aggregate unit test result
-        run: mkdir -p agg && jrm agg/result.xml *.xml
-        working-directory: build_x64/gtest_result/
+        run: mkdir -p gtest_result/agg && python3 ../merge_result.py gtest_result/*.xml > gtest_result/agg/result.xml
+        working-directory: build_x64/
       - uses: dorny/test-reporter@v1
         with:
           name: UnitTest
@@ -107,5 +107,11 @@ jobs:
       - name: Configure docker if needed
         run: docker swarm init || true
       - name: Run integrations tests
-        run: LEOSAC_INTEGRATION_TEST_DATA_ROOT=${{ github.workspace }}/tests dotnet test
+        run: LEOSAC_INTEGRATION_TEST_DATA_ROOT=${{ github.workspace }}/tests dotnet test --logger "trx;LogFileName=test-results.trx"
         working-directory: LeosacSharp
+      - uses: dorny/test-reporter@v1
+        with:
+          name: Integration Tests
+          path: LeosacSharp/LeosacIntegrationTests/TestResults/test-results.trx
+          reporter: dotnet-trx
+          fail-on-error: 'false'
