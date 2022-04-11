@@ -24,14 +24,12 @@ jobs:
 #          path: build_x64/package/
 #          retention-days: 2
       - name: Run ctest
-        run: ctest .
+        run: ctest . || true
         working-directory: build_x64
       - name: Aggregate unit test result
-        if: success() || failure()
         run: mkdir -p agg && jrm agg/result.xml *.xml
         working-directory: build_x64/gtest_result/
       - uses: dorny/test-reporter@v1
-        if: success() || failure()
         with:
           name: UnitTest
           path: ${{ github.workspace }}/build_x64/gtest_result/agg/*.xml
