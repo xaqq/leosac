@@ -23,6 +23,8 @@ jobs:
 #          name: leosac-package-x64
 #          path: build_x64/package/
 #          retention-days: 2
+      - name: Create Docker Image
+        run: docker create -t leosac_test -f tests/Dockerfile build_x64/package
       - name: Run ctest
         run: ctest . || true
         working-directory: build_x64
@@ -77,3 +79,33 @@ jobs:
 #          name: leosac-package-arm32
 #          path: build_arm32/package/
 #          retention-days: 2
+      - uses: actions/upload-artifact@v3
+        with:
+          name: leosac-package-arm32
+          path: build_arm32/package/
+          retention-days: 2
+
+  integration_test:
+    runs-on: self-hosted
+    needs: [build_x64]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - uses: ./.github/actions/install-build-deps
+      - name: Install MS package (keys and such)
+        run: >
+          wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && 
+          sudo dpkg -i packages-microsoft-prod.deb &&
+          rm packages-microsoft-prod.deb
+      - name: Install dotnet
+        run: >        
+          sudo apt-get update &&
+          sudo apt-get install -y apt-transport-https && 
+          sudo apt-get update &&
+          sudo apt-get install -y dotnet-sdk-6.0
+      - name: Configure docker if needed
+        run: docker swarn init || true
+      - name: Run integrations tests
+        run: LEOSAC_INTEGRATION_TEST_DATA_ROOT=${{ github.workspace }}/tests dotnet test
+        working-directory: LeosacSharp

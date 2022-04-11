@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeosacIntegration", "LeosacIntegration\LeosacIntegration.csproj", "{CEE5B664-D239-4D55-9DD7-84631BA62D42}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeosacDB", "LeosacDB\LeosacDB.csproj", "{F2465441-80B9-4ED9-A08F-70D5150490D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeosacAPI", "LeosacAPI\LeosacAPI.csproj", "{39BAC773-9408-4040-948C-B730DD911FA9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeosacIntegrationTests", "LeosacIntegrationTests\LeosacIntegrationTests.csproj", "{EF22F001-339E-476B-A22E-4F39BE4B7543}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CEE5B664-D239-4D55-9DD7-84631BA62D42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEE5B664-D239-4D55-9DD7-84631BA62D42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEE5B664-D239-4D55-9DD7-84631BA62D42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEE5B664-D239-4D55-9DD7-84631BA62D42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2465441-80B9-4ED9-A08F-70D5150490D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2465441-80B9-4ED9-A08F-70D5150490D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2465441-80B9-4ED9-A08F-70D5150490D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2465441-80B9-4ED9-A08F-70D5150490D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39BAC773-9408-4040-948C-B730DD911FA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39BAC773-9408-4040-948C-B730DD911FA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39BAC773-9408-4040-948C-B730DD911FA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39BAC773-9408-4040-948C-B730DD911FA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF22F001-339E-476B-A22E-4F39BE4B7543}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF22F001-339E-476B-A22E-4F39BE4B7543}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF22F001-339E-476B-A22E-4F39BE4B7543}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF22F001-339E-476B-A22E-4F39BE4B7543}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
