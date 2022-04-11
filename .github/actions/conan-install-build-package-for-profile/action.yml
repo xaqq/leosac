@@ -16,7 +16,7 @@ runs:
       shell: bash
     - name: Install conan dependencies
       working-directory: ${{ inputs.build-dir }}
-      run: conan install --build missing --profile:build ../conan/profile --profile:host ${{ inputs.host-profile }} ..
+      run: conan install --build missing --profile:build ${{ github.workspace }}/conan/profile --profile:host ${{ inputs.host-profile }} ..
       shell: bash
     - name: Build
       working-directory: ${{ inputs.build-dir }}
