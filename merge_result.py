@@ -47,6 +47,7 @@ def merge_results(xml_files):
         # Merge suite stats
         s = get_suite_by_name(suites, test_suite.attrib["name"])
         s.timestamp = test_suite.attrib["timestamp"]
+        s.name = test_suite.attrib["name"]
         s.tests += int(test_suite.attrib["tests"])
         s.failures += int(test_suite.attrib["failures"])
         s.disabled += int(test_suite.attrib["disabled"])
@@ -70,6 +71,7 @@ def merge_results(xml_files):
 
         # Create new "merged" by name suite.
         new_xml_suite = ET.Element('testsuite')
+        new_xml_suite.attrib['name'] = str(test_suite.name)        
         new_xml_suite.attrib['timestamp'] = str(test_suite.timestamp)
         new_xml_suite.attrib['tests'] = str(test_suite.tests)
         new_xml_suite.attrib['failures'] = str(test_suite.failures)
