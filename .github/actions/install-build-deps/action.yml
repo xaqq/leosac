@@ -13,6 +13,8 @@ runs:
       shell: bash
     - run: sudo pip3 install conan
       shell: bash
+    - run:  conan remote add -i 0 xaqqjfrog https://xaqq.jfrog.io/artifactory/api/conan/default-conan-local
+      shell: bash
     - name: Export vendored conan packages
       run: >
         (cd vendor/libodb && conan export .) &&
