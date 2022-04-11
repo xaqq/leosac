@@ -24,7 +24,7 @@ jobs:
 #          path: build_x64/package/
 #          retention-days: 2
       - name: Create Docker Image
-        run: docker build -t ghcr.io/leosac/leosac_test:$GITHUB_SHA -f tests/Dockerfile build_x64/package
+        run: docker build -t ghcr.io/${{ github.actor }}/leosac_test:${{ github.sha }} -f tests/Dockerfile build_x64/package
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
         with:
@@ -32,7 +32,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Push docker image
-        run: docker push ghcr.io/leosac/leosac_test:$GITHUB_SHA
+        run: docker push ghcr.io/${{ github.actor }}/leosac_test:${{ github.sha }}
       - name: Run ctest
         run: ctest . || true
         working-directory: build_x64
@@ -119,7 +119,7 @@ jobs:
       - name: Configure docker if needed
         run: docker swarm init || true
       - name: Pull leoasc test image
-        run: docker pull ghcr.io/leosac/leosac_test:$GITHUB_SHA && docker tag ghcr.io/leosac/leosac_test:$GITHUB_SHA leosac_test
+        run: docker pull ghcr.io/${{ github.actor }}/leosac_test:${{ github.sha }} && docker tag ghcr.io/${{ github.actor }}/leosac_test:${{ github.sha }} leosac_test
       - name: Run integrations tests
         run: LEOSAC_INTEGRATION_TEST_DATA_ROOT=${{ github.workspace }}/tests dotnet test --logger "trx;LogFileName=test-results.trx"
         working-directory: LeosacSharp
