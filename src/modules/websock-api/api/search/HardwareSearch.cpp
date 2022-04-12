@@ -42,7 +42,7 @@ MethodHandlerUPtr HardwareSearch::create(RequestContext ctx)
 
 struct HardwareComparator
 {
-    bool operator()(const Hardware::DevicePtr &c1, const Hardware::DevicePtr &c2)
+    bool operator()(const Hardware::DevicePtr &c1, const Hardware::DevicePtr &c2) const
     {
         ASSERT_LOG(c1, "Hardware c1 is null");
         ASSERT_LOG(c2, "Hardware c2 is null");

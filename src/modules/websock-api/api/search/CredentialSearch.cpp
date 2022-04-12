@@ -41,7 +41,7 @@ MethodHandlerUPtr CredentialSearch::create(RequestContext ctx)
 
 struct CredentialComparator
 {
-    bool operator()(const Cred::CredentialPtr &c1, const Cred::CredentialPtr &c2)
+    bool operator()(const Cred::CredentialPtr &c1, const Cred::CredentialPtr &c2) const
     {
         ASSERT_LOG(c1, "Credential c1 is null");
         ASSERT_LOG(c2, "Credential c2 is null");

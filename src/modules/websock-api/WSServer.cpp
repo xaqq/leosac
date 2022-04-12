@@ -68,6 +68,7 @@
 #include "tools/registry/ThreadLocalRegistry.hpp"
 #include <nlohmann/json.hpp>
 #include <odb/session.hxx>
+//#include <boost/asio/experimental/co_spawn.hpp>
 
 using namespace Leosac;
 using namespace Leosac::Module;
@@ -139,12 +140,23 @@ WSServer::~WSServer()
     ASSERT_LOG(get_service_registry().use_count<Service>() <= 0,
                "Someone is still using the WSService");
 }
+/*
+
+
+boost::asio::awaitable<void> test_await()
+{
+    steady_timer timer(co_await this_coro::executor);
+    timer.expires_after(100ms);
+    co_await timer.async_wait(use_awaitable);
+}
+*/
 
 void WSServer::on_open(websocketpp::connection_hdl hdl)
 {
     INFO("New WebSocket connection !");
     connection_session_.insert(
         std::make_pair(hdl, std::make_shared<APISession>(*this)));
+   // boost::asio::co_spawn()
 }
 
 void WSServer::on_close(websocketpp::connection_hdl hdl)

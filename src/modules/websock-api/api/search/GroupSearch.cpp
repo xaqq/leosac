@@ -41,7 +41,7 @@ MethodHandlerUPtr GroupSearch::create(RequestContext ctx)
 
 struct GroupComparator
 {
-    bool operator()(const Auth::Group &g1, const Auth::Group &g2)
+    bool operator()(const Auth::Group &g1, const Auth::Group &g2) const
     {
         ASSERT_LOG(g1.id(), "g1 has no id.");
         ASSERT_LOG(g2.id(), "g2 has no id.");
