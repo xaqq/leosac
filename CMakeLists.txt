@@ -41,7 +41,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 set(ODB_EXECUTABLE odb)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/UseODB.cmake)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wno-undef -Wno-shadow -Wno-unknown-pragmas")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wno-undef -Wno-shadow -Wno-unknown-pragmas")
 
 #Build Options
 option(LEOSAC_BUILD_MODULES "build-modules" ON)

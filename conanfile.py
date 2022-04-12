@@ -37,6 +37,8 @@ class LeosacConan(ConanFile):
         'zmqpp:shared': True,
         'boost:without_stacktrace': True,
         'boost:without_test': True,
+        'paho-mqtt-c:shared': True,
+        'paho-mqtt-cpp:shared': True
     }
 
     exports_sources = "CMakeLists.txt", "cmake*", "src*", "scripts*", "cfg*", "deps*", "test*"

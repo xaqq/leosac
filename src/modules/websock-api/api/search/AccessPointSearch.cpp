@@ -41,7 +41,7 @@ MethodHandlerUPtr AccessPointSearch::create(RequestContext ctx)
 
 struct AccessPointComparator
 {
-    bool operator()(const Auth::AccessPoint &ap1, const Auth::AccessPoint &ap2)
+    bool operator()(const Auth::AccessPoint &ap1, const Auth::AccessPoint &ap2) const
     {
         ASSERT_LOG(ap1.id(), "g1 has no id.");
         ASSERT_LOG(ap2.id(), "g2 has no id.");

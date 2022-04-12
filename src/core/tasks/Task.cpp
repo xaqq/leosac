@@ -37,7 +37,7 @@ Task::Task()
 
 bool Task::is_complete() const
 {
-    return complete_.load(std::memory_order::memory_order_acquire);
+    return complete_.load(std::memory_order_acquire);
 }
 
 void Task::run()
@@ -69,7 +69,7 @@ void Task::run()
 
     {
         mutex_.lock();
-        complete_.store(true, std::memory_order::memory_order_release);
+        complete_.store(true, std::memory_order_release);
         mutex_.unlock();
         cv_.notify_all();
     }
@@ -81,7 +81,7 @@ void Task::wait()
 {
     std::unique_lock<std::mutex> ul(mutex_);
     cv_.wait(ul, [&]() {
-        return complete_.load(std::memory_order::memory_order_acquire);
+        return complete_.load(std::memory_order_acquire);
     });
 }
 

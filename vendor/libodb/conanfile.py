@@ -1,5 +1,5 @@
 from conans import ConanFile, tools
-from conans.tools import download, untargz, check_md5, check_sha1, check_sha256, cpu_count
+from conans.tools import download, untargz, check_md5, check_sha1, check_sha256, cpu_count, patch
 from conan.tools.gnu import Autotools, AutotoolsToolchain
 
 import os
@@ -10,7 +10,8 @@ class LibOdbConan(ConanFile):
     name = "libodb"
     version = "2.4.0"
     generators = "AutotoolsToolchain"
-
+    exports_sources = 'patch_leosac_cpp20'
+    
     def generate(self):
         tc = AutotoolsToolchain(self)
         tc.default_configure_install_args=True
@@ -24,6 +25,7 @@ class LibOdbConan(ConanFile):
         os.unlink(zip_name)
 
     def build(self):
+        tools.patch(patch_file='patch_leosac_cpp20', base_path='libodb')
         autotools = Autotools(self)
         autotools.configure('libodb')
         autotools.make()

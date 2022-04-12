@@ -41,7 +41,7 @@ MethodHandlerUPtr DoorSearch::create(RequestContext ctx)
 
 struct DoorComparator
 {
-    bool operator()(const Auth::Door &d1, const Auth::Door &d2)
+    bool operator()(const Auth::Door &d1, const Auth::Door &d2) const
     {
         ASSERT_LOG(d1.id(), "d1 has no id.");
         ASSERT_LOG(d2.id(), "d2 has no id.");

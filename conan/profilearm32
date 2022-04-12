@@ -5,7 +5,7 @@ arch=armv7
 compiler=gcc
 compiler.version=10
 compiler.libcxx=libstdc++11
-cppstd=14
+cppstd=20
 [options]
 leosac:build_test=False
 [build_requires]

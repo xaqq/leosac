@@ -86,10 +86,13 @@ LogEntry::QueryResult LogEntry::retrieve(DBPtr database, int page_number,
             entries.push_back(entry);
         }
 
-        return {.entries = entries,
-                .total   = view.count,
-                .last    = view.count / page_size,
-                .first   = 0};
+        QueryResult query_result;
+        query_result.entries = std::move(entries);
+        query_result.total   = view.count;
+        query_result.last    = view.count / page_size;
+        query_result.first   = 0;
+
+        return query_result;
     }
     return {};
 }

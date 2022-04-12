@@ -65,7 +65,7 @@ struct EntitySearchTool
 
     struct DatabaseEntityComparator
     {
-        bool operator()(const DatabaseEntity &e1, const DatabaseEntity &e2)
+        bool operator()(const DatabaseEntity &e1, const DatabaseEntity &e2) const
         {
             static_assert(std::is_integral<decltype(e1.id())>::value,
                           "Id is not an integral type.");
