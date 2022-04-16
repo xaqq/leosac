@@ -7,24 +7,188 @@ on:
     branches: [ develop ]
 
 jobs:
-  build_x64:
+  build_base_docker:
+    # Build a base docker image that will be used to build Leosac in various configuration.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
-      - uses: ./.github/actions/install-build-deps
-      - uses: ./.github/actions/conan-install-build-package-for-profile
-        with:
-          host-profile: ${{ github.workspace }}/conan/profile
-          build-dir: build_x64
-#      - uses: actions/upload-artifact@v3
-#        with:
-#          name: leosac-package-x64
-#          path: build_x64/package/
-#          retention-days: 2
       - name: Create Docker Image
-        run: docker build -t ghcr.io/${{ github.actor }}/leosac_test:${{ github.sha }} -f tests/Dockerfile build_x64/package
+        run: docker build -t ghcr.io/${{ github.actor }}/leosac_base:${{ github.sha }} -f conan/Dockerfile.base ${{ github.workspace }}
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push docker image
+        run: docker push ghcr.io/${{ github.actor }}/leosac_base:${{ github.sha }}
+
+  build_docker_x64:
+    runs-on: ubuntu-latest
+    needs: [build_base_docker]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Docker Image
+        run: >
+          docker build
+          --build-arg LEOSAC_BASE_DOCKER=ghcr.io/${{ github.actor }}/leosac_base:${{ github.sha }}
+          -t ghcr.io/${{ github.actor }}/leosac_build_x64:${{ github.sha }}
+          -f conan/Dockerfile.build_x64
+          ${{ github.workspace }}
+      - name: Push docker image
+        run: docker push ghcr.io/${{ github.actor }}/leosac_build_x64:${{ github.sha }}
+
+  build_docker_unit_tests_x64:
+    runs-on: ubuntu-latest
+    needs: [build_docker_x64]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Docker Image
+        run: >
+          docker build
+          --build-arg LEOSAC_BUILD_X64=ghcr.io/${{ github.actor }}/leosac_build_x64:${{ github.sha }}
+          -t ghcr.io/${{ github.actor }}/leosac_unit_tests_x64:${{ github.sha }}
+          -f conan/Dockerfile.unit_tests_x64
+          ${{ github.workspace }}
+      - name: Push docker image
+        run: docker push ghcr.io/${{ github.actor }}/leosac_unit_tests_x64:${{ github.sha }}
+
+  build_docker_integration_tests_x64:
+    runs-on: ubuntu-latest
+    needs: [build_docker_x64]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Docker Image
+        run: >
+          docker build
+          --build-arg LEOSAC_BUILD_X64=ghcr.io/${{ github.actor }}/leosac_build_x64:${{ github.sha }}
+          -t ghcr.io/${{ github.actor }}/leosac_integration_tests_x64:${{ github.sha }}
+          -f conan/Dockerfile.integration_tests_x64
+          ${{ github.workspace }}
+      - name: Push docker image
+        run: docker push ghcr.io/${{ github.actor }}/leosac_integration_tests_x64:${{ github.sha }}
+
+  run_docker_unit_tests_x64:
+    runs-on: ubuntu-latest
+    needs: [build_docker_unit_tests_x64]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run tests
+        run: >
+          mkdir unittests_result coverage_result &&
+          docker run 
+          -v${{ github.workspace }}/unittests_result:/unittests_result 
+          -v${{ github.workspace }}/coverage_result:/coverage_result 
+          ghcr.io/${{ github.actor }}/leosac_unit_tests_x64:${{ github.sha }}
+      - name: Aggregate unit test result
+        run: mkdir -p gtest_result/agg && python3 merge_result.py unittests_result/*.xml > unittests_result.xml
+      - uses: dorny/test-reporter@v1
+        with:
+          name: Unit Tests Results
+          path: ${{ github.workspace }}/unittests_result.xml
+          reporter: java-junit
+          fail-on-error: 'false'
+       # Also upload coverage report to codecov
+      - uses: codecov/codecov-action@v2
+        with:
+          files: ${{ github.workspace }}/coverage_result/coverage.info
+          flags: unittests
+          verbose: true
+
+  run_integration_tests:
+    runs-on: ubuntu-latest
+    needs: [ build_docker_integration_tests_x64 ]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install MS package (keys and such)
+        run: >
+          wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && 
+          sudo dpkg -i packages-microsoft-prod.deb &&
+          rm packages-microsoft-prod.deb
+      - name: Install dotnet
+        run: >
+          sudo apt-get update &&
+          sudo apt-get install -y apt-transport-https && 
+          sudo apt-get update &&
+          sudo apt-get install -y dotnet-sdk-6.0
+      - name: Install dotnet
+        run: sudo apt-get install -y lcov
+      - name: Configure docker if needed
+        run: docker swarm init || true
+      - name: Pull leosac test image
+        run: docker pull ghcr.io/${{ github.actor }}/leosac_integration_tests_x64:${{ github.sha }} && docker tag ghcr.io/${{ github.actor }}/leosac_integration_tests_x64:${{ github.sha }} leosac_test
+      - name: Run integrations tests
+        run: >
+          LEOSAC_INTEGRATION_TEST_DATA_ROOT=${{ github.workspace }}/tests
+          LEOSAC_INTEGRATION_COVERAGE_RESULT_ROOT=${{ github.workspace }}/tests/coverage
+          dotnet test --logger "trx;LogFileName=test-results.trx"
+        working-directory: LeosacSharp
+      - uses: dorny/test-reporter@v1
+        with:
+          name: Integration Tests Results
+          path: LeosacSharp/LeosacIntegrationTests/TestResults/test-results.trx
+          reporter: dotnet-trx
+          fail-on-error: 'false'
+      # Upload to codecov
+      - uses: codecov/codecov-action@v2
+        with:
+          files: tests/coverage/**
+          flags: integrationtests
+          verbose: true
+
+
+  build_x64:
+    runs-on: ubuntu-latest
+    if: ${{ false }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - uses: ./.github/actions/install-build-deps
+      - name: Create Docker Image
+        run: docker build -t ghcr.io/${{ github.actor }}/leosac_base:${{ github.sha }} -f conan/Dockerfile.base build_x64/package
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
         with:
@@ -45,9 +209,26 @@ jobs:
           path: ${{ github.workspace }}/build_x64/gtest_result/agg/*.xml
           reporter: java-junit
           fail-on-error: 'false'
+      # Create coverage report.
+      - name: Create coverage report
+        run: lcov --no-external --exclude '*_odb_*' --directory . --capture -o coverage.info
+      # Upload to codecov
+      - uses: codecov/codecov-action@v2
+        with:
+          files: coverage.info
+          flags: unittests
+          verbose: true
+      - name: Prepare GCNO files for upload
+        run: mkdir gcno && (cd build_x64 && find . -name "*gcno" -exec cp --parents {} ../gcno \; )
+      - uses: actions/upload-artifact@v3
+        with:
+          name: x64-gcno
+          path: gcno
+          retention-days: 2
 
   build_arm64:
     runs-on: ubuntu-latest
+    if: ${{ false }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -60,14 +241,15 @@ jobs:
         with:
           host-profile: ${{ github.workspace }}/conan/profilearm64
           build-dir: build_arm64
-#      - uses: actions/upload-artifact@v3
-#        with:
-#          name: leosac-package-arm64
-#          path: build_arm64/package/
-#          retention-days: 2
+  #      - uses: actions/upload-artifact@v3
+  #        with:
+  #          name: leosac-package-arm64
+  #          path: build_arm64/package/
+  #          retention-days: 2
 
   build_arm-linux-gnueabi:
     runs-on: ubuntu-latest
+    if: ${{ false }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -80,46 +262,8 @@ jobs:
         with:
           host-profile: ${{ github.workspace }}/conan/profilearm32
           build-dir: build_arm32
-#      - uses: actions/upload-artifact@v3
-#        with:
-#          name: leosac-package-arm32
-#          path: build_arm32/package/
-#          retention-days: 2
-
-  run_integration_tests:
-    runs-on: ubuntu-latest
-    needs: [build_x64]
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: recursive
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Install MS package (keys and such)
-        run: >
-          wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && 
-          sudo dpkg -i packages-microsoft-prod.deb &&
-          rm packages-microsoft-prod.deb
-      - name: Install dotnet
-        run: >        
-          sudo apt-get update &&
-          sudo apt-get install -y apt-transport-https && 
-          sudo apt-get update &&
-          sudo apt-get install -y dotnet-sdk-6.0
-      - name: Configure docker if needed
-        run: docker swarm init || true
-      - name: Pull leoasc test image
-        run: docker pull ghcr.io/${{ github.actor }}/leosac_test:${{ github.sha }} && docker tag ghcr.io/${{ github.actor }}/leosac_test:${{ github.sha }} leosac_test
-      - name: Run integrations tests
-        run: LEOSAC_INTEGRATION_TEST_DATA_ROOT=${{ github.workspace }}/tests dotnet test --logger "trx;LogFileName=test-results.trx"
-        working-directory: LeosacSharp
-      - uses: dorny/test-reporter@v1
-        with:
-          name: Integration Tests Results
-          path: LeosacSharp/LeosacIntegrationTests/TestResults/test-results.trx
-          reporter: dotnet-trx
-          fail-on-error: 'false'
+  #      - uses: actions/upload-artifact@v3
+  #        with:
+  #          name: leosac-package-arm32
+  #          path: build_arm32/package/
+  #          retention-days: 2

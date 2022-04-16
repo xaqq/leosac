@@ -24,13 +24,15 @@ class LeosacConan(ConanFile):
 
     options = {
         'build_test': [True, False],
-        'build_module_mqtt': [True, False]
+        'build_module_mqtt': [True, False],
+        'coverage': [True, False]
     }
 
     generators = 'cmake'
     default_options = {
         'build_test': True,
         'build_module_mqtt': False,
+        'coverage': False,
         'gtest:shared': True,
         'libpq:shared': True,
         'zeromq:shared': True,
@@ -56,6 +58,9 @@ class LeosacConan(ConanFile):
             cmake.definitions['LEOSAC_BUILD_TESTS'] = True
         if self.options.build_module_mqtt:
             cmake.definitions['LEOSAC_BUILD_MODULE_MQTT'] = True
+        if self.options.coverage:
+            cmake.definitions['LEOSAC_ENABLE_COVERAGE'] = True
+
         cmake.configure()
         cmake.build()
 

@@ -1,6 +1,10 @@
 build
 cmake-build-debug
 doc
-.git
+#.git
 Dockerfile
+Dockerfile.*
+conan/build_docker.sh
+conan/Dockerfile*
 *~
+.github
