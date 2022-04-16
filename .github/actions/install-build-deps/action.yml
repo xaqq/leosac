@@ -6,14 +6,11 @@ runs:
     - name: Install dependencies
       run: >
         sudo apt-get install -y cmake build-essential pkg-config
-        apt-utils g++-9 gcc-10 g++-10 git odb python3 python3-pip npm
-      shell: bash
-    - name: Install jrm (merge junit report)
-      run: sudo npm install -g junit-report-merger
+        apt-utils g++-9 gcc-10 g++-10 git odb python3 python3-pip lcov
       shell: bash
     - run: sudo pip3 install conan
       shell: bash
-    - run:  conan remote add -i 0 xaqqjfrog https://xaqq.jfrog.io/artifactory/api/conan/default-conan-local
+    - run:  conan remote add -f -i 0 xaqqjfrog https://xaqq.jfrog.io/artifactory/api/conan/default-conan-local
       shell: bash
     - name: Export vendored conan packages
       run: >

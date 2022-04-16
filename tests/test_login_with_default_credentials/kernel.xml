@@ -13,8 +13,9 @@
     </database>
 
     <plugin_directories>
-      <plugindir>lib/leosac/</plugindir>
-      <plugindir>lib/leosac/auth</plugindir>
+        <plugindir>lib/</plugindir>
+        <plugindir>lib/leosac/</plugindir>
+        <plugindir>lib/leosac/auth</plugindir>
     </plugin_directories>
 
     <network>

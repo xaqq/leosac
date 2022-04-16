@@ -1,0 +1,20 @@
+ARG LEOSAC_BUILD_X64
+FROM ${LEOSAC_BUILD_X64} as build_base
+
+FROM debian:bullseye
+RUN apt-get update
+RUN apt-get install -y cmake lcov
+COPY --from=build_base /leosac_repository/ /leosac_repository/
+
+VOLUME /coverage_result
+VOLUME /unittests_result
+
+RUN echo "#/bin/bash                    \n\
+pushd /leosac_repository/build/         \n\
+ctest -j16                              \n\
+cp gtest_result/*.xml /unittests_result \n\
+popd                                    \n\
+lcov --no-external --exclude '*_odb_*' --directory . --capture -o /coverage_result/coverage.info \n\
+" > /entrypoint.sh
+
+ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]

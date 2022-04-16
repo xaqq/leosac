@@ -1,0 +1,16 @@
+ARG LEOSAC_BUILD_X64
+FROM ${LEOSAC_BUILD_X64} as build_base
+
+FROM debian:bullseye
+RUN apt-get update
+RUN apt-get install -y lcov
+COPY --from=build_base /leosac_repository/build /leosac_repository/build
+
+VOLUME /test_data
+VOLUME /coverage_result
+
+COPY conan/integration_entrypoint.sh /entrypoint.sh
+
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]

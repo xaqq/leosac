@@ -9,7 +9,7 @@ public class LeosacDockerHelper : IAsyncDisposable
     public string DockerNetworkName;
     public string LeosacDockerServiceName;
     public string PostgresDockerServiceName;
-    public const string LeosacImageName = "leosac_test:latest";
+    public const string LeosacImageName = "leosac_test";
     public const string PostgresImageName = "postgres:9.6";
 
     private string LeosacServiceId;
@@ -24,7 +24,7 @@ public class LeosacDockerHelper : IAsyncDisposable
     DockerClient client;
 
     private async Task<uint?> GetPublishedPortForService(uint port, string serviceId)
-    {         
+    {
         var service = await client.Swarm.InspectServiceAsync(serviceId);
         foreach (var configuredPort in service.Endpoint.Ports)
         {
@@ -36,7 +36,7 @@ public class LeosacDockerHelper : IAsyncDisposable
 
         return null;
     }
-    
+
     public async Task<uint> GetPostgresPublishedPort()
     {
         var port = await GetPublishedPortForService(5432, PostgresServiceId);
@@ -44,17 +44,19 @@ public class LeosacDockerHelper : IAsyncDisposable
         {
             throw new ApplicationException("Cannot find pgsql published port");
         }
-        return (uint)port;
+
+        return (uint) port;
     }
-    
+
     public async Task<uint> GetLeosacWebsocketPublishedPort()
-    {     
+    {
         var port = await GetPublishedPortForService(8888, LeosacServiceId);
         if (port == null)
         {
             throw new ApplicationException("Cannot find leosac published port");
         }
-        return (uint)port;
+
+        return (uint) port;
     }
 
     public LeosacDockerHelper(string testDataDirectory, string testName)
@@ -76,13 +78,57 @@ public class LeosacDockerHelper : IAsyncDisposable
         {
             Filters = new ServiceFilter
             {
-                Name = new[] { serviceName },
+                Name = new[] {serviceName},
             }
         });
 
+        // Scale down services.
         foreach (var service in services)
         {
-            Console.WriteLine($"Removing service {serviceName} with id {service.ID}");
+            Console.WriteLine($"Scaling down service {serviceName} with id {service.ID} to 0 replicas...");
+            var p = new ServiceUpdateParameters();
+            p.Version = (long) service.Version.Index;
+            p.Service = service.Spec;
+            p.Service.Mode = new ServiceMode
+            {
+                Replicated = new ReplicatedService()
+                {
+                    Replicas = 0
+                }
+            };
+            await client.Swarm.UpdateServiceAsync(service.ID, p);
+
+            while (true)
+            {
+                Console.WriteLine("Waiting for service to scale down...");
+                var x2 = await client.Swarm.ListServicesAsync(new ServicesListParameters
+                {
+                    Filters = new ServiceFilter
+                    {
+                        Name = new[] {serviceName},
+                    }
+                });
+                if (!x2.Any())
+                {
+                    // Prob exited, good.
+                    break;
+                }
+
+                if (x2.First().ServiceStatus == null)
+                {
+                    break;
+                }
+                if (x2.First().ServiceStatus?.RunningTasks == 0)
+                {
+                    break;
+                }
+
+                await Task.Delay(1000);
+            }
+        }
+
+        foreach (var service in services)
+        {
             await client.Swarm.RemoveServiceAsync(service.ID);
             while (true)
             {
@@ -90,16 +136,18 @@ public class LeosacDockerHelper : IAsyncDisposable
                 {
                     Filters = new ServiceFilter
                     {
-                        Name = new[] { serviceName },
+                        Name = new[] {serviceName},
                     }
                 });
                 if (!x2.Any())
                 {
                     break;
                 }
-            }  
+
+                await Task.Delay(1000);
+            }
         }
-        
+
         // Wait for associated tasks to finish
         foreach (var service in services)
         {
@@ -117,8 +165,8 @@ public class LeosacDockerHelper : IAsyncDisposable
                     });
                     if (!x2.Any())
                     {
-                        Console.WriteLine($"Waiting for tasks of service {serviceName} (with id {service.ID}) to finish");
-                        await Task.Delay(3000);
+                        Console.WriteLine(
+                            $"Waiting for tasks of service {serviceName} (with id {service.ID}) to finish");
                         break;
                     }
                 }
@@ -130,7 +178,9 @@ public class LeosacDockerHelper : IAsyncDisposable
                         break;
                     }
                 }
-            }  
+
+                await Task.Delay(1000);
+            }
         }
     }
 
@@ -138,7 +188,10 @@ public class LeosacDockerHelper : IAsyncDisposable
     {
         var testDataSource = Environment.GetEnvironmentVariable("LEOSAC_INTEGRATION_TEST_DATA_ROOT") ??
                              "/home/user/leosac/tests/";
-        
+        var coverageResultRoot = Environment.GetEnvironmentVariable("LEOSAC_INTEGRATION_COVERAGE_RESULT_ROOT") ??
+                                 $"{Directory.GetCurrentDirectory()}/coverage_result";
+        var coverageResultDirectory = $"{coverageResultRoot}/{TestName}";
+        Directory.CreateDirectory(coverageResultDirectory);
         ServiceCreateParameters p = new ServiceCreateParameters
         {
             Service = new ServiceSpec
@@ -148,6 +201,8 @@ public class LeosacDockerHelper : IAsyncDisposable
                 {
                     ContainerSpec = new ContainerSpec
                     {
+                        // 1 minute
+                        StopGracePeriod = (long)1000000000 * 60,
                         Image = LeosacImageName,
                         Mounts = new List<Mount>
                         {
@@ -155,12 +210,17 @@ public class LeosacDockerHelper : IAsyncDisposable
                             {
                                 Target = "/test_data/",
                                 Source = $"/{testDataSource}/{TestDataDirectory}/"
+                            },
+                            new Mount
+                            {
+                                Target = "/coverage_result/",
+                                Source = coverageResultDirectory
                             }
                         },
-
                         Command = new[]
                         {
-                            "/leosac_package/bin/leosac",
+                            "/bin/bash",
+                            "/entrypoint.sh",
                             "-k",
                             "/test_data/kernel.xml"
                         },
@@ -258,7 +318,7 @@ public class LeosacDockerHelper : IAsyncDisposable
     public async Task Start()
     {
         await CleanupDocker();
-	
+
         await CreateNetwork();
         await CreatePostgresService();
         PostgresContainerId = await GetContainerIdForServiceId(PostgresServiceId, PostgresDockerServiceName);
@@ -267,8 +327,8 @@ public class LeosacDockerHelper : IAsyncDisposable
         LeosacContainerId = await GetContainerIdForServiceId(LeosacServiceId, LeosacDockerServiceName);
         await WaitForContainerToStart(PostgresContainerId);
         await WaitForContainerToStart(LeosacContainerId);
-        
-        
+
+
         /*var logProgess = new Progress<string>(msg => { Console.WriteLine(msg); });
 
         ContainerLogsParameters logsParameters = new ContainerLogsParameters
@@ -365,6 +425,7 @@ public class LeosacDockerHelper : IAsyncDisposable
             {
                 throw new ApplicationException($"Docker tasks issue: status = {taskResponse.Status.State}");
             }
+
             if (taskResponse.Status.ContainerStatus != null)
             {
                 return taskResponse.Status.ContainerStatus.ContainerID;
@@ -384,17 +445,17 @@ public class LeosacDockerHelper : IAsyncDisposable
         {
             var filter = new ServiceFilter
             {
-                Id = new[]{ PostgresServiceId }
+                Id = new[] {PostgresServiceId}
             };
             var inspection = await client.Swarm.ListServicesAsync(new ServicesListParameters
             {
-                Filters  = filter
+                Filters = filter
             }, cancellationToken);
             if (inspection != null && !inspection.Any())
                 break;
             await Task.Delay(1000, cancellationToken);
         }
-        
+
         // Now make sure the previous container id for postgres is down too
         while (true)
         {

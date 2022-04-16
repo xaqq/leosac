@@ -1,0 +1,11 @@
+ARG LEOSAC_BASE_DOCKER=leosac_base
+FROM ${LEOSAC_BASE_DOCKER}
+
+RUN apt-get update
+RUN apt-get install -y cmake g++-10 gcc-10 lcov
+
+RUN mkdir build
+WORKDIR /leosac_repository/build
+RUN conan install --build missing --profile:build ../conan/profile --profile:host ../conan/profileci ..
+RUN conan build ..
+

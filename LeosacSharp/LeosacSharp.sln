@@ -8,8 +8,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeosacAPI", "LeosacAPI\Leos
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeosacIntegrationTests", "LeosacIntegrationTests\LeosacIntegrationTests.csproj", "{EF22F001-339E-476B-A22E-4F39BE4B7543}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeosacCLI", "LeosacCLI\LeosacCLI.csproj", "{3A0FDCFF-DE32-415D-8655-A920DB12DF24}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,9 +30,5 @@ Global
 		{EF22F001-339E-476B-A22E-4F39BE4B7543}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF22F001-339E-476B-A22E-4F39BE4B7543}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF22F001-339E-476B-A22E-4F39BE4B7543}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3A0FDCFF-DE32-415D-8655-A920DB12DF24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3A0FDCFF-DE32-415D-8655-A920DB12DF24}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3A0FDCFF-DE32-415D-8655-A920DB12DF24}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3A0FDCFF-DE32-415D-8655-A920DB12DF24}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -48,6 +48,10 @@ option(LEOSAC_BUILD_MODULES "build-modules" ON)
 option(LEOSAC_BUILD_TESTS "build-tests" OFF)
 option(LEOSAC_GPROF "gprof" OFF)
 
+if (LEOSAC_ENABLE_COVERAGE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
+endif()
+
 if (LEOSAC_GPROF)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
 endif ()

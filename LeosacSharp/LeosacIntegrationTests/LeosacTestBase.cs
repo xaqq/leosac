@@ -33,7 +33,7 @@ public class LeosacTestBase : IAsyncLifetime
         _serviceProvider = serviceCollection.BuildServiceProvider();
 
         var cts = new CancellationTokenSource();
-        cts.CancelAfter(120 * 1000);
+        cts.CancelAfter(240 * 1000);
         _cancellationToken = cts.Token;
         helper = new LeosacDockerHelper(testDataDirectory, testName);
     }
@@ -47,10 +47,9 @@ public class LeosacTestBase : IAsyncLifetime
         _api = await CreateAndWaitLeosacApi();
     }
 
-    public Task DisposeAsync()
+    public async Task DisposeAsync()
     {
-        helper.DisposeAsync();
-        return Task.CompletedTask;
+        await helper.DisposeAsync();
     }
 
     protected async Task<leosacContext> GetDbContext()
