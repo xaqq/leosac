@@ -8,7 +8,7 @@ RUN apt-get install -y cmake g++-9 odb
 #    g++-10-arm-linux-gnueabi gcc-10-arm-linux-gnueabi \
 #    gcc-10-aarch64-linux-gnu g++-10-aarch64-linux-gnu \
 
-RUN conan remote add -f -i 0 xaqqjfrog https://xaqq.jfrog.io/artifactory/api/conan/default-conan-local
+#RUN conan remote add -f -i 0 xaqqjfrog https://xaqq.jfrog.io/artifactory/api/conan/default-conan-local
 
 COPY . /leosac_repository
 
