@@ -27,7 +27,7 @@ class LibOdbConan(ConanFile):
     def build(self):
         tools.patch(patch_file='patch_leosac_cpp20', base_path='libodb')
         autotools = Autotools(self)
-        autotools.configure('libodb')
+        autotools.configure(build_script_folder='libodb')
         autotools.make()
 
     def package(self):
