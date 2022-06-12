@@ -13,12 +13,11 @@ set(OdbCMake_ODB_HEADERS
         )
 
 set(LEOSAC_ODB_INCLUDE_DIRS
-        ${CMAKE_SOURCE_DIR}/deps/zmqpp/src/
         ${CMAKE_SOURCE_DIR}/src
         ${CMAKE_SOURCE_DIR}/deps/flagset
-        ${CMAKE_SOURCE_DIR}/deps/date/include
-        ${ZEROMQ_INCLUDE_DIR}
         ${CMAKE_SOURCE_DIR}/src/db
+
+        ${CONAN_INCLUDE_DIRS}
         )
 
 set(OdbCMake_SOURCES "")

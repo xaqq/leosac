@@ -2,3 +2,5 @@
 build_type=Release
 [options]
 leosac:build_module_mqtt=True
+leosac:build_module_lla=True
+LogicalAccess:LLA_BUILD_PKCS=False

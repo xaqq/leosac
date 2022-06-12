@@ -25,13 +25,15 @@ class LeosacConan(ConanFile):
     options = {
         'build_test': [True, False],
         'build_module_mqtt': [True, False],
+        'build_module_lla': [True, False],
         'coverage': [True, False]
     }
 
     generators = 'cmake'
     default_options = {
         'build_test': True,
-        'build_module_mqtt': False,
+        'build_module_mqtt': True,
+        'build_module_lla': True,
         'coverage': False,
         'gtest:shared': True,
         'libpq:shared': True,
@@ -51,6 +53,8 @@ class LeosacConan(ConanFile):
             self.requires('gtest/1.11.0')
         if self.options.build_module_mqtt:
             self.requires('paho-mqtt-cpp/1.2.0')
+        if self.options.build_module_lla:
+            self.requires('LogicalAccess/2.4.0')
     
     def build(self):
         cmake = CMake(self)
@@ -58,6 +62,8 @@ class LeosacConan(ConanFile):
             cmake.definitions['LEOSAC_BUILD_TESTS'] = True
         if self.options.build_module_mqtt:
             cmake.definitions['LEOSAC_BUILD_MODULE_MQTT'] = True
+        if self.options.build_module_lla:
+            cmake.definitions['LEOSAC_BUILD_MODULE_LLA'] = True
         if self.options.coverage:
             cmake.definitions['LEOSAC_ENABLE_COVERAGE'] = True
 
